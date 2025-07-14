@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js UU Theme</title>
+
+	<!-- reveal.js stylesheets -->
+	<link rel="stylesheet" href="reveal-js/reset.css">
+	<link rel="stylesheet" href="reveal-js/reveal.css">
+	<link rel="stylesheet" href="reveal-js/white.css">
+	<link rel="stylesheet" href="reveal-js/plugin/highlight/monokai.css">
+
+	<!-- reveal.js scripts -->
+	<script src="reveal-js/reveal.js" defer></script>
+	<script src="reveal-js/plugin/highlight/highlight.js" defer></script>
+	<script src="reveal-js/plugin/markdown/markdown.js" defer></script>
+	<script src="reveal-js/plugin/math/math.js" defer></script>
+	<script src="reveal-js/plugin/notes/notes.js" defer></script>
+	<script src="reveal-js/plugin/search/search.js" defer></script>
+	<script src="reveal-js/plugin/zoom/zoom.js" defer></script>
+
+	<!-- uu theme stylesheet and script -->
+	<link rel="stylesheet" href="theme-uu/theme-uu.css">
+	<script src="theme-uu/init.js" defer></script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section class="title">
+				<img class="logo" src="./theme-uu/uu-logo-colour-gray.svg" alt="Logo">
+				<div class="content">
+					<h1>Title line 1<br>line 2</h1>
+					<hr>
+					<h2>Subtitle or venue</h2>
+					<div>Author / Speaker</div>
+					<div style="font-size: smaller">Uppsala University, Sweden</div>
+					<div>Date</div>
+					<br><br>
+					<div>(press space or arrow keys to navigate the slides)</div>
+				</div>
+			</section>
+			<section data-markdown="readme.md"></section>
+			<section>
+				<h1>H1 Title</h1>
+				<h2>H2 Title</h2>
+				<h3>H3 Title</h3>
+				<h4>H4 Title</h4>
+				<h5>H5 Title</h5>
+				<h6>H6 Title</h6>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+				</p>
+				<p>
+					Suspendisse sodales eros sit amet scelerisque accumsan.
+					Phasellus ut velit eu nisl imperdiet vehicula.
+				</p>
+			</section>
+			<section class="title">
+				<script>
+					// copy title page
+					document.write(document.querySelector("section.title")?.innerHTML);
+				</script>
+			</section>
+		</div>
+	</div>
+
+	<header class="static-header"></header>
+
+	<footer class="static-footer">
+		<img src="theme-uu/uu-logo-colour-uu-red.svg" alt="Logo">
+		<div>Uppsala University | firstname.lastname@it.uu.se</div>
+	</footer>
+</body>
+
+</html>
