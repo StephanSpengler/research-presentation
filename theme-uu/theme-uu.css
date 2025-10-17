@@ -44,6 +44,12 @@ html {
   color: var(--uu-se-red);
 }
 
+/* red emphasis */
+em {
+  color: var(--uu-se-red);
+  font-style: normal !important;
+}
+
 /* header and footer */
 
 header,
