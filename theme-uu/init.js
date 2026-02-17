@@ -1,9 +1,12 @@
 // make all paragraphs and list items fragments
-Reveal.addEventListener("ready", () =>
-    document.querySelectorAll("section p, section li, *[fragment], .make-fragment").forEach(
-        li => li.classList.add("fragment")
-    )
-);
+Reveal.addEventListener("ready", () =>{
+    document.querySelectorAll("section p, section li, *[fragment], .make-fragment, .make-fragments>*").forEach(
+        element => element.classList.add("fragment")
+    );
+    document.querySelectorAll(".no-fragment, .no-fragments>*").forEach(
+        element => element.classList.remove("fragment")
+    );
+});
 
 Reveal.initialize({
     // see https://revealjs.com/config/
