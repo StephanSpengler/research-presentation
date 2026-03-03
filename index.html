@@ -53,32 +53,33 @@
 				<span class="fragment"></span>
 				<h1>Sequential Consistency</h1>
 				<h1>&nbsp;</h1>
-				<table class="code">
-					<thead>
-						<tr>
-							<td id="var-x">x = 0</td>
-							<td id="var-y">y = 0</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td id="assign-x" class="active">x := 1</td>
-							<td id="assign-y" class="active">y := 1</td>
-						</tr>
-						<tr>
-							<td id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></td>
-							<td id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 1</span></td>
-						</tr>
-						<tr>
-							<td id="assume-a">assume(a == 0)</td>
-							<td id="assume-b">assume(b == 0)</span></td>
-						</tr>
-						<tr>
-							<td id="critical-x" class="comment">// critical section</td>
-							<td id="critical-y" class="comment">// critical section</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="columns">
+					<div style="flex: 2 1 0;">
+						<div class="code">
+							<div id="assign-x" class="active">x := 1</div>
+							<div id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
+							<div id="assume-a">assume(a == 0)</div>
+							<div id="critical-x" class="comment">// critical section</div>
+						</div>
+						<br>
+						<div class="code">
+							<div id="assign-y" class="active">y := 1</div>
+							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></div>
+							<div id="assume-b">assume(b == 0)</div>
+							<div id="critical-y" class="comment">// critical section</div>
+						</div>
+					</div>
+					<div></div>
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-x">x = 0</code>
+							<br>
+							<code id="var-y">y = 0</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+				</div>
 			</section>
 			<section id="intro-tso">
 				<span class="fragment"></span>
@@ -86,46 +87,36 @@
 				<span class="fragment"></span>
 				<span class="fragment"></span>
 				<span class="fragment"></span>
+				<span class="fragment"></span>
 				<h1>Total Store Order</h1>
 				<h1>&nbsp;</h1>
-				<table class="code">
-					<thead>
-						<tr>
-							<td id="var-x">x = 0</td>
-							<td id="var-y">y = 0</td>
-						</tr>
-					</thead>
-				</table>
 				<div class="columns">
-					<div style="display:flex; flex-direction: row;">
-						<span id="buffer1"></span>
-						<span>⇑</span>
+					<div style="flex: 2 1 0;">
+						<div class="code">
+							<div id="assign-x" class="active">x := 1</div>
+							<div id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
+							<div id="assume-a">assume(a == 0)</div>
+							<div id="critical-x" class="comment">// critical section</div>
+						</div>
+						<br>
+						<div class="code">
+							<div id="assign-y" class="active">y := 1</div>
+							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></div>
+							<div id="assume-b">assume(b == 0)</div>
+							<div id="critical-y" class="comment">// critical section</div>
+						</div>
 					</div>
-					<div style="display:flex; flex-direction: row-reverse;">
-						<span id="buffer2"></span>
-						<span style="font-size: larger;">⇑</span>
+					<div></div>
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-x">x = 0</code>
+							<br>
+							<code id="var-y">y = 0</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
 					</div>
 				</div>
-				<table class="code">
-					<tbody>
-						<tr>
-							<td id="assign-x" class="active">x := 1</td>
-							<td id="assign-y" class="active">y := 1</td>
-						</tr>
-						<tr>
-							<td id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></td>
-							<td id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></td>
-						</tr>
-						<tr>
-							<td id="assume-a">assume(a == 0)</td>
-							<td id="assume-b">assume(b == 0)</span></td>
-						</tr>
-						<tr>
-							<td id="critical-x" class="comment">// critical section</td>
-							<td id="critical-y" class="comment">// critical section</td>
-						</tr>
-					</tbody>
-				</table>
 			</section>
 			<section class="title">
 				<script>

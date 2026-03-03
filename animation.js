@@ -96,7 +96,7 @@
         const idx = event.fragment.dataset.fragmentIndex;
         if (idx == 0) {
             assignX.classList.remove("active");
-            buffer1.textContent = "⟨x = 1⟩";
+            // buffer1.textContent = "⟨x = 1⟩";
             readA.classList.add("active");
         }
         if (idx == 1) {
@@ -110,7 +110,7 @@
         }
         if (idx == 3) {
             assignY.classList.remove("active");
-            buffer2.textContent = "⟨y = 1⟩";
+            // buffer2.textContent = "⟨y = 1⟩";
             readB.classList.add("active");
         }
         if (idx == 4) {
@@ -118,6 +118,11 @@
             commentB.style.display = "inline";
             assumeB.classList.add("active");
         }
+        if (idx == 5) {
+            assumeB.classList.remove("active");
+            criticalY.classList.add("active");
+        }
+        // TODO: add update
     });
 
     Reveal.on("fragmenthidden", event => {
@@ -125,7 +130,7 @@
         const idx = event.fragment.dataset.fragmentIndex;
         if (idx == 0) {
             assignX.classList.add("active");
-            buffer1.textContent = "ε";
+            // buffer1.textContent = "ε";
             readA.classList.remove("active");
         }
         if (idx == 1) {
@@ -139,13 +144,17 @@
         }
         if (idx == 3) {
             assignY.classList.add("active");
-            buffer2.textContent = "ε";
+            // buffer2.textContent = "ε";
             readB.classList.remove("active");
         }
         if (idx == 4) {
             readB.classList.add("active");
             commentB.style.display = "none";
             assumeB.classList.remove("active");
+        }
+        if (idx == 5) {
+            assumeB.classList.add("active");
+            criticalY.classList.remove("active");
         }
     });
 }
