@@ -25,6 +25,10 @@
 	<!-- uu theme stylesheet and script -->
 	<link rel="stylesheet" href="theme-uu/theme-uu.css">
 	<script src="theme-uu/init.js" defer></script>
+
+	<!-- custom stylesheets and scripts -->
+	<link rel="stylesheet" href="style.css">
+	<script src="animation.js" defer></script>
 </head>
 
 <body>
@@ -40,6 +44,88 @@
 					<div style="font-size: smaller">Uppsala University, Sweden</div>
 					<div>06.03.2024</div>
 				</div>
+			</section>
+			<section id="intro-sc">
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<h1>Sequential Consistency</h1>
+				<h1>&nbsp;</h1>
+				<table class="code">
+					<thead>
+						<tr>
+							<td id="var-x">x = 0</td>
+							<td id="var-y">y = 0</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td id="assign-x" class="active">x := 1</td>
+							<td id="assign-y" class="active">y := 1</td>
+						</tr>
+						<tr>
+							<td id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></td>
+							<td id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 1</span></td>
+						</tr>
+						<tr>
+							<td id="assume-a">assume(a == 0)</td>
+							<td id="assume-b">assume(b == 0)</span></td>
+						</tr>
+						<tr>
+							<td id="critical-x" class="comment">// critical section</td>
+							<td id="critical-y" class="comment">// critical section</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+			<section id="intro-tso">
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<span class="fragment"></span>
+				<h1>Total Store Order</h1>
+				<h1>&nbsp;</h1>
+				<table class="code">
+					<thead>
+						<tr>
+							<td id="var-x">x = 0</td>
+							<td id="var-y">y = 0</td>
+						</tr>
+					</thead>
+				</table>
+				<div class="columns">
+					<div style="display:flex; flex-direction: row;">
+						<span id="buffer1"></span>
+						<span>⇑</span>
+					</div>
+					<div style="display:flex; flex-direction: row-reverse;">
+						<span id="buffer2"></span>
+						<span style="font-size: larger;">⇑</span>
+					</div>
+				</div>
+				<table class="code">
+					<tbody>
+						<tr>
+							<td id="assign-x" class="active">x := 1</td>
+							<td id="assign-y" class="active">y := 1</td>
+						</tr>
+						<tr>
+							<td id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></td>
+							<td id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></td>
+						</tr>
+						<tr>
+							<td id="assume-a">assume(a == 0)</td>
+							<td id="assume-b">assume(b == 0)</span></td>
+						</tr>
+						<tr>
+							<td id="critical-x" class="comment">// critical section</td>
+							<td id="critical-y" class="comment">// critical section</td>
+						</tr>
+					</tbody>
+				</table>
 			</section>
 			<section class="title">
 				<script>

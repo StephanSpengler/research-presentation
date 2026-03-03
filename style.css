@@ -1,0 +1,71 @@
+.code{
+    font-family: "Courier New", Courier, monospace;
+    background-color: #eee;
+}
+
+table.code{
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+table.code thead {
+    border-bottom: 0.25rem solid black;
+}
+
+table.code tbody {
+    counter-reset: rowNumber;
+}
+
+table.code tr {
+    border-bottom: 0.125rem solid gray;
+    counter-increment: rowNumber;
+}
+
+table.code tbody tr:last-child {
+    border-bottom: none;
+}
+
+table.code td::before {
+    white-space: pre;
+    content: counter(rowNumber) ":   ";
+    color: gray;
+}
+
+table.code tbody td.active::before {
+    content: counter(rowNumber) ": ▶ ";
+}
+
+table.code thead td::before,
+table.code tfoot td::before {
+    visibility: hidden;
+}
+
+table.code tbody td,
+table.code tfoot td {
+    border-right: 0.25rem solid black;
+}
+
+table.code tbody td:last-child,
+table.code tfoot td:last-child {
+    border-right: none;
+}
+
+.highlight {
+    font-weight: bolder;
+}
+
+.comment {
+    color: gray;
+}
+
+.columns {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.columns>div {
+    flex: 1 1 0;
+}
