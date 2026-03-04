@@ -1,5 +1,13 @@
+section.smaller *:not(:first-child) {
+    font-size: 90%;
+}
+
+li {
+    margin: 2rem 0;
+}
+
 /* centering */
-.center-v, .center {
+.center-v, .center, section:has(h1) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,7 +61,6 @@
     background-color: #eee;
     border: 0.125rem solid #555;
 }
-
 .oval {
     height: 20cqh;
     width: 100cqw;
@@ -66,4 +73,67 @@
     padding-top: 10cqh;
     border-top: none;
     border-bottom: none;
+}
+
+/* buffer */
+.buffers{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-around;
+    container-type: size;
+}
+.fifo-box {
+    --h: 100cqh; /* element height */
+    --r: 1rem; /* radius */
+
+    background: var(--uu-se-red);
+    height: var(--h);
+    border-radius: var(--r);
+    clip-path: shape(
+        from 0 100%,
+        hline   by calc(100% - var(--h)/2),
+        arc     by calc(var(--r)*0.7071)        calc(var(--r)*-0.2929)          of var(--r),
+        line    by calc(var(--h)/2 - var(--r))  calc(var(--r) - var(--h)/2),
+        arc     by 0                            calc(var(--r)*-1.4142)          of var(--r),
+        line    by calc(var(--r) - var(--h)/2)  calc(var(--r) - var(--h)/2),
+        arc     by calc(var(--r)*-0.7071)       calc(var(--r)*-0.2929)          of var(--r),
+        line to 0 0
+    );
+}
+.fifo-box.outer {
+    --h: 25cqh;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    container-type: size;
+}
+.fifo-box.inner {
+    --r: 0.5rem;
+    background: #eee;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3rem;
+    padding-right: 50cqh;
+}
+
+/* animation */
+@keyframes highlightPop {
+    0% {
+        transform: scale(1);
+        color: inherit;
+    }
+    50% {
+        transform: scale(1.5);
+        color: var(--uu-se-red);
+    }
+    100% {
+        transform: scale(1);
+        color: inherit;
+    }
+}
+
+.highlight-animate {
+    animation: highlightPop 1s ease-in-out;
 }

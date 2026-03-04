@@ -114,9 +114,9 @@ footer div {
   position: fixed;
   margin: 0 auto;
   left: -20em;
-  top: 1em;
-  max-width: 36em;
-  max-height: 36em;
+  top: 2em;
+  max-width: 32em;
+  max-height: 32em;
 }
 
 .reveal section.title .content {

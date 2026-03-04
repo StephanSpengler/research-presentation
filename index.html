@@ -38,21 +38,22 @@
 				<img class="logo" src="./theme-uu/uu-logo-colour-gray.svg" alt="Logo">
 				<div class="content">
 					<h2>Algorithmic Structure in Weak Memory<br>and RDMA Verification</h2>
-					<hr>
-					<h3>Research Presentation at ITU</h3>
+					<br>
+					<br>
+					<br>
+					<br>
 					<div>Stephan Spengler</div>
 					<div style="font-size: smaller">Uppsala University, Sweden</div>
 					<div>06.03.2024</div>
 				</div>
 			</section>
-			<section id="intro-sc">
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<h1>Sequential Consistency</h1>
-				<h1>&nbsp;</h1>
+			<!-- Introduction -->
+			<section class="center">
+				<h1>Introduction</h1>
+			</section>
+			<section id="intro-sc" class="smaller">
+				<h2>Sequential Consistency</h2>
+				<h2>&nbsp;</h2>
 				<div class="columns">
 					<div style="flex: 2 1 0;">
 						<div class="code">
@@ -81,15 +82,9 @@
 					</div>
 				</div>
 			</section>
-			<section id="intro-tso">
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<span class="fragment"></span>
-				<h1>Total Store Order</h1>
-				<h1>&nbsp;</h1>
+			<section id="intro-tso" class="smaller">
+				<h2>Total Store Order</h2>
+				<h2>&nbsp;</h2>
 				<div class="columns">
 					<div style="flex: 2 1 0;">
 						<div class="code">
@@ -106,7 +101,16 @@
 							<div id="critical-y" class="comment">// critical section</div>
 						</div>
 					</div>
-					<div></div>
+					<div class="buffers">
+						<div class="fifo-box outer">
+							<div class="fifo-box inner" id="buffer-1">
+							</div>
+						</div>
+						<div class="fifo-box outer">
+							<div class="fifo-box inner" id="buffer-2">
+							</div>
+						</div>
+					</div>
 					<div style="position: relative; container-type: size;">
 						<div class="oval" style=" top: 80cqh"></div>
 						<div class="straight center">
@@ -118,6 +122,7 @@
 					</div>
 				</div>
 			</section>
+			<section data-markdown="markdown/weak-memory.md"></section>
 			<section class="title">
 				<script>
 					// copy title page
