@@ -53,7 +53,6 @@
 			</section>
 			<section id="intro-sc" class="smaller">
 				<h2>Sequential Consistency</h2>
-				<h2>&nbsp;</h2>
 				<div class="columns">
 					<div style="flex: 2 1 0;">
 						<div class="code">
@@ -84,30 +83,31 @@
 			</section>
 			<section id="intro-tso" class="smaller">
 				<h2>Total Store Order</h2>
-				<h2>&nbsp;</h2>
 				<div class="columns">
-					<div style="flex: 2 1 0;">
-						<div class="code">
-							<div id="assign-x" class="active">x := 1</div>
-							<div id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
-							<div id="assume-a">assume(a == 0)</div>
-							<div id="critical-x" class="comment">// critical section</div>
-						</div>
-						<br>
-						<div class="code">
-							<div id="assign-y" class="active">y := 1</div>
-							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></div>
-							<div id="assume-b">assume(b == 0)</div>
-							<div id="critical-y" class="comment">// critical section</div>
-						</div>
-					</div>
-					<div class="buffers">
-						<div class="fifo-box outer">
-							<div class="fifo-box inner" id="buffer-1">
+					<div style="flex: 4;">
+						<div class="columns" style="align-items: center;">
+							<div class="code" style="flex: 3;">
+								<div id="assign-x" class="active">x := 1</div>
+								<div id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
+								<div id="assume-a">assume(a == 0)</div>
+								<div id="critical-x" class="comment">// critical section</div>
+							</div>
+							<div class="fifo-box outer" style="flex: 2;">
+								<div class="fifo-box inner" id="buffer-1">
+								</div>
 							</div>
 						</div>
-						<div class="fifo-box outer">
-							<div class="fifo-box inner" id="buffer-2">
+						<br>
+						<div class="columns" style="align-items: center;">
+							<div class="code" style="flex: 3;">
+								<div id="assign-y" class="active">y := 1</div>
+								<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></div>
+								<div id="assume-b">assume(b == 0)</div>
+								<div id="critical-y" class="comment">// critical section</div>
+							</div>
+							<div class="fifo-box outer" style="flex: 2;">
+								<div class="fifo-box inner" id="buffer-2">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -123,6 +123,77 @@
 				</div>
 			</section>
 			<section data-markdown="markdown/weak-memory.md"></section>
+			<section class="center">
+				<h1>TSO Games</h1>
+			</section>
+			<section>
+				<h2>Process Syntax</h2>
+				<div class="center">
+					<code>
+						P ::= skip
+						<br>
+						&nbsp;&nbsp;&nbsp; | P1 ; P2
+						<br>
+						&nbsp;&nbsp;&nbsp; | P1 + P2
+						<br>
+						&nbsp;&nbsp;&nbsp; | P*
+						<br>
+						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub>
+						<br>
+						&nbsp;&nbsp;&nbsp; | x := CAS(z, v<sub>r</sub>, v<sub>w</sub>)
+						<br>
+						&nbsp;&nbsp;&nbsp; | assume(x == v<sub>r</sub>)
+						<br>
+						&nbsp;&nbsp;&nbsp; | assume(x != v<sub>r</sub>)
+						<br>
+						&nbsp;&nbsp;&nbsp; | mfence
+					</code>
+				</div>
+			</section>
+			<section id="tso-semantics" class="smaller">
+				<h2>Total Store Order Semantics</h2>
+				<div class="columns">
+					<div style="flex: 4;">
+						<div class="columns" style="align-items: center;">
+							<div class="code" style="flex: 3;">
+								<div id="assign-x" class="active">x := 1</div>
+								<div id="assign-y">y := 2</div>
+								<div id="read-a">a := z <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
+								<div id="read-b">b := y <span id="comment-b" class="comment" style="display:none"> // b = 2</span></div>
+								<div id="read-c">c := x <span id="comment-c" class="comment" style="display:none"> // c = 1</span></div>
+								<div id="continued-1" class="comment">// ...</div>
+							</div>
+							<div class="fifo-box outer" style="flex: 2;">
+								<div class="fifo-box inner" id="buffer-1">
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="columns" style="align-items: center;">
+							<div class="code" style="flex: 3;">
+								<div id="read-d" class="active">d := x <span id="comment-d" class="comment" style="display:none"> // d = 0</span></div>
+								<div id="read-e">e := x <span id="comment-e" class="comment" style="display:none"> // e = 1</span></div>
+								<div id="continued-2" class="comment">// ...</div>
+							</div>
+							<div class="fifo-box outer" style="flex: 2;">
+								<div class="fifo-box inner" id="buffer-2">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-x">x = 0</code>
+							<br>
+							<code id="var-y">y = 0</code>
+							<br>
+							<code id="var-z">z = 0</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+				</div>
+			</section>
 			<section class="title">
 				<script>
 					// copy title page
@@ -141,3 +212,11 @@
 </body>
 
 </html>
+<!-- RDMA paper syntax (RDMA specifics missing) -->
+					<!-- <code>
+						P ::= skip | P1 ; P2 | P1 + P2 | P*
+						<br>
+						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | x := CAS(z, v<sub>r</sub>, v<sub>w</sub>)
+						<br>
+						&nbsp;&nbsp;&nbsp; | assume(x == v<sub>r</sub>) | assume(x != v<sub>r</sub>)
+					</code> -->

@@ -1,18 +1,16 @@
 ## Verification of Weak Memory
-
-Classical SC assumptions break:
-
-- Hardware reordering → unexpected behaviours
-    - TSO: Delayed writes, outdated reads
-- Infinite-state effects
-    - TSO: Unbounded buffers
-
-→ Even simple programs become non-trivial.
+<!-- .slide: class="centered bullet-unshift" -->
+- Classical SC assumptions break:
+    - Hardware reordering → unexpected behaviours
+        - TSO: Delayed writes, outdated reads
+    - Infinite-state effects
+        - TSO: Unbounded buffers
+- → Even simple programs become non-trivial.</span>
 
 ---
 
 ## Theoretical Challenges
-
+<!-- .slide: class="centered" -->
 - Infinite state
 - Non-local interactions
 - Non-intuitive execution sequences
@@ -21,7 +19,7 @@ Classical SC assumptions break:
 ---
 
 ## Central Research Questions
-
+<!-- .slide: class="centered" -->
 - When is verification decidable?
 - Can we reduce infinite-state to analysable models?
 - Can we identify structural patterns?
@@ -30,7 +28,7 @@ Classical SC assumptions break:
 ---
 
 ## My Research Direction
-
+<!-- .slide: class="centered" -->
 - Game-theoretic abstractions of weak memory
 - Normal forms & canonical violations
 - Decidability vs. undecidability

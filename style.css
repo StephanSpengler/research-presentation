@@ -1,9 +1,22 @@
-section.smaller *:not(:first-child) {
+section.smaller>*:not(:first-child) {
     font-size: 90%;
 }
 
 li {
     margin: 2rem 0;
+}
+
+.reveal .slides section.centered {
+    text-align: center;
+}
+.bullet-unshift>ul {
+    list-style-type: none;
+}
+.bullet-unshift>ul>li>ul {
+    list-style-type: disc;
+}
+.bullet-unshift>ul>li>ul>li>ul {
+    list-style-type: square;
 }
 
 /* centering */
@@ -16,6 +29,10 @@ li {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+.center-self{
+    align-self: center;
+    margin: auto;
 }
 
 /* columns */
@@ -76,17 +93,7 @@ li {
 }
 
 /* buffer */
-.buffers{
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    justify-content: space-around;
-    container-type: size;
-}
 .fifo-box {
-    --h: 100cqh; /* element height */
-    --r: 1rem; /* radius */
-
     background: var(--uu-se-red);
     height: var(--h);
     border-radius: var(--r);
@@ -102,19 +109,21 @@ li {
     );
 }
 .fifo-box.outer {
-    --h: 25cqh;
+    --h: 6rem;
+    --r: 1rem;
     padding: 0.5rem;
     box-sizing: border-box;
     container-type: size;
 }
 .fifo-box.inner {
+    --h: 100cqh;
     --r: 0.5rem;
     background: #eee;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
     justify-content: flex-start;
-    gap: 3rem;
+    gap: 1rem;
     padding-right: 50cqh;
 }
 
@@ -133,7 +142,18 @@ li {
         color: inherit;
     }
 }
-
 .highlight-animate {
     animation: highlightPop 1s ease-in-out;
+}
+
+@keyframes vanish {
+  0% {
+    font-size: inherit;
+  }
+  100% {
+    font-size: 0;
+  }
+}
+.vanish {
+    animation: vanish 1s forwards;
 }
