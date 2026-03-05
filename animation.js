@@ -204,24 +204,19 @@ function addToBuffer(buffer, text) {
     // P1
     const assignX = section.querySelector("#assign-x");
     const assignY = section.querySelector("#assign-y");
-    const readA = section.querySelector("#read-a");
-    const commentA = section.querySelector("#comment-a");
-    const readB = section.querySelector("#read-b");
-    const commentB = section.querySelector("#comment-b");
-    const readC = section.querySelector("#read-c");
-    const commentC = section.querySelector("#comment-c");
+    const assumeZ = section.querySelector("#assume-z");
+    const assumeY = section.querySelector("#assume-y");
+    const assumeX = section.querySelector("#assume-x");
     const mfence = section.querySelector("#mfence");
     const continued1 = section.querySelector("#continued-1");
     const buffer1 = section.querySelector("#buffer-1");
     // P2
-    const readD = section.querySelector("#read-d");
-    const commentD = section.querySelector("#comment-d");
-    const readE = section.querySelector("#read-e");
-    const commentE = section.querySelector("#comment-e");
+    const assumeX0 = section.querySelector("#assume-x0");
+    const assumeX1 = section.querySelector("#assume-x1");
     const continued2 = section.querySelector("#continued-2");
     const buffer2 = section.querySelector("#buffer-2");
 
-    addFragments(section, 10);
+    addFragments(section, 9);
 
     Reveal.on("fragmentshown", event => {
         if (Reveal.getCurrentSlide() !== section) return;
@@ -234,22 +229,19 @@ function addToBuffer(buffer, text) {
         if (idx == 1) {
             assignY.classList.remove("active");
             addToBuffer(buffer1, "⟨y = 2⟩");
-            readA.classList.add("active");
+            assumeZ.classList.add("active");
         }
         if (idx == 2) {
-            readA.classList.remove("active");
-            commentA.style.display = "inline";
-            readB.classList.add("active");
+            assumeZ.classList.remove("active");
+            assumeY.classList.add("active");
         }
         if (idx == 3) {
-            readB.classList.remove("active");
-            commentB.style.display = "inline";
-            readC.classList.add("active");
+            assumeY.classList.remove("active");
+            mfence.classList.add("active");
         }
         if (idx == 4) {
-            readD.classList.remove("active");
-            commentD.style.display = "inline";
-            readE.classList.add("active");
+            assumeX0.classList.remove("active");
+            assumeX1.classList.add("active");
         }
         if (idx == 5) {
             vanish(buffer1.children[0]);
@@ -257,21 +249,15 @@ function addToBuffer(buffer, text) {
             highlight(varX);
         }
         if (idx == 6) {
-            readC.classList.remove("active");
-            commentC.style.display = "inline";
-            mfence.classList.add("active");
-        }
-        if (idx == 7) {
-            readE.classList.remove("active");
-            commentE.style.display = "inline";
+            assumeX1.classList.remove("active");
             continued2.classList.add("active");
         }
-        if (idx == 8) {
-            vanish(buffer1.children[0]);
+        if (idx == 7) {
+            vanish(buffer1.children[1]);
             varY.textContent = "y = 2";
             highlight(varY);
         }
-        if (idx == 9) {
+        if (idx == 8) {
             mfence.classList.remove("active");
             continued1.classList.add("active");
         }

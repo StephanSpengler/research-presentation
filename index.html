@@ -155,9 +155,8 @@
 							<div class="code" style="flex: 3;">
 								<div id="assign-x" class="active">x := 1</div>
 								<div id="assign-y">y := 2</div>
-								<div id="read-a">a := z <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
-								<div id="read-b">b := y <span id="comment-b" class="comment" style="display:none"> // b = 2</span></div>
-								<div id="read-c">c := x <span id="comment-c" class="comment" style="display:none"> // c = 1</span></div>
+								<div id="assume-z">assume(z == 0)</div>
+								<div id="assume-y">assume(y == 2)</div>
 								<div id="mfence">mfence</div>
 								<div id="continued-1" class="comment">// ...</div>
 							</div>
@@ -169,8 +168,8 @@
 						<br>
 						<div class="columns" style="align-items: center;">
 							<div class="code" style="flex: 3;">
-								<div id="read-d" class="active">d := x <span id="comment-d" class="comment" style="display:none"> // d = 0</span></div>
-								<div id="read-e">e := x <span id="comment-e" class="comment" style="display:none"> // e = 1</span></div>
+								<div id="assume-x0" class="active">assume(x == 0)</div>
+								<div id="assume-x1">assume(x == 1)</div>
 								<div id="continued-2" class="comment">// ...</div>
 							</div>
 							<div class="fifo-box outer" style="flex: 2;">
