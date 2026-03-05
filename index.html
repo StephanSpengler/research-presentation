@@ -347,7 +347,7 @@
 				</div>
 			</section>
 			<section class="centered">
-				<h2>TSO Games - Observations</h2>
+				<h2>Observations</h2>
 				<ul>
 					<li><span style="display: inline-block; width: 18rem;">process player:</span> only plays in one process</li>
 					<li><span style="display: inline-block; width: 18rem;">update player:</span> never updates any messages</li>
@@ -359,7 +359,7 @@
 				</ul>
 			</section>
 			<section class="centered">
-				<h2>TSO Games - Adding Fairness</h2>
+				<h2>Adding Fairness</h2>
 				<ul>
 					<li>
 						process player: only plays in one process
@@ -453,7 +453,7 @@
 				</div>
 			</section>
 			<section>
-				<h2>TSO Games - Fairness</h2>
+				<h2>TSO Games with Fairness</h2>
 				<ul>
 					<li>
 						<b>Update Fairness:</b>
@@ -548,6 +548,236 @@
 						<br>
 						&nbsp;&nbsp;&nbsp; | rfence(<span class="bar">n</span>) | poll(<span class="bar">n</span>)
 					</code>
+				</div>
+			</section>
+			<section>
+				<h2>RDMA - Reachability</h2>
+				<br>
+				<div>
+					<div class="fragment" data-fragment-index="0">
+						<span style="display: inline-block; width: 8rem;">Show:</span> RDMA reachability is undecidable
+						<br>
+						<span style="display: inline-block; width: 8rem;">Idea:</span> Reduction from <i>Perfect Channel Systems</i>
+					</div>
+					<div class="columns" style="container-type: size;">
+						<ul style="flex: 1;">
+							<li class="fragment" data-fragment-index="1">use RDMA queue pairs to simulate<br>the channel</li>
+							<li class="fragment" data-fragment-index="2">synchronisation (rfence, poll)<br><b>not needed</b></li>
+						</ul>
+						<img class="fragment" data-fragment-index="1" src="pcs.svg" alt="Perfect Channel System" width="40%" height="100%" style="flex: 0;">
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>RDMA - Robustness</h2>
+				<br>
+				<b><em>Robustness Problem:</em></b>
+				<br>
+				<div class="make-fragments">
+					<div>Given an RDMA program,</div>
+					<div>for each execution of the program under RDMA semantics,</div>
+					<div>is there an execution of the program under SC semantics,</div>
+					<div>such that the behaviours are equivalent, meaning:</div>
+					<ul class="smaller">
+						<li>each read operation reads the same value</li>
+						<li>for each variable, all write operations are done in the same order</li>
+					</ul>
+				</div>
+				<br>
+				<div class="make-fragment columns">
+					<div class="center">yes? → robust</div>
+					<div class="center">no? → not robust</div>
+				</div>
+			</section>
+			<section id="rdma-violation">
+				<h2>RDMA: Example Violation</h2>
+				<div class="columns" style="min-height: 24rem;">
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-x">x = 1</code>
+							<br>
+							<code id="var-y">y = 0</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+					<div class="center-h" style="flex:2;">
+						<div class="code">
+							<div class="active">y := <span class="bar">w</span></div>
+							<div><span class="bar">z</span> := x</div>
+							<div>x := 2</div>
+						</div>
+					</div>
+					<div class="queue-pair" style="flex:3;">
+						<div style="display: flex; flex-direction: row;">
+							<div class="fifo-box outer" style="flex: 1;">
+								<div class="fifo-box inner" id="buffer-1"></div>
+							</div>
+							<div class="fifo-box outer" style="flex: 1;">
+								<div class="fifo-box inner" id="buffer-2"></div>
+							</div>
+						</div>
+						<div class="fifo-box back outer">
+							<div class="fifo-box back inner" id="buffer-3"></div>
+						</div>
+					</div>
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-z">z = 0</code>
+							<br>
+							<code id="var-w">w = 1</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+				</div>
+				<br>
+				<div id="event-sequence"></div>
+			</section>
+			<section>
+				<h2>Normal Form Construction</h2>
+				<div style="position: relative;">
+					<ul>
+						<li class="fragment">
+							requirement: minimal violation
+							<br>
+							<code style="font-size: smaller;" class="fragment">
+								nrR(w, 1) lW(x, 2) nlR(x, 2) nrW(z, 2) nlW(y, 1)
+							</code>
+						</li>
+						<li class="fragment">
+							identify and remove maximal event
+							<br>
+							<code style="font-size: smaller;" class="fragment">
+								nrR(w, 1) nlR(x, 2) nrW(z, 2) nlW(y, 1)
+							</code>
+						</li>
+						<li class="fragment">
+							order in a sequentially consistent way
+							<br>
+							<code style="font-size: smaller;" class="fragment">
+								nrR(w, 1) nlW(y, 1) nlR(x, 2) nrW(z, 2)
+							</code>
+						</li>
+						<li class="fragment">
+							reinsert maximal event
+							<br>
+							<code style="font-size: smaller;" class="fragment">
+								nrR(w, 1) lW(x, 2) nlW(y, 1) nlR(x, 2) nrW(z, 2)
+							</code>
+						</li>						
+					</ul>
+					<div class="code" style="position:absolute; right: 0; top: 50%; transform: translateY(-50%);">
+						<div>y := <span class="bar">w</span></div>
+						<div><span class="bar">z</span> := x</div>
+						<div>x := 2</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>Normal Form Structure</h2>
+				<div>
+					<div class="center-v">
+						<code>
+							nrR(w, 1) <em>lW(x, 2)</em> nlR(x, 2) nrW(z, 2) nlW(y, 1)
+						</code>
+						⇓
+						<code>
+							nrR(w, 1) <em>lW(x, 2)</em> nlW(y, 1) nlR(x, 2) nrW(z, 2)
+						</code>
+					</div>
+					<br>
+					<ul class="make-fragments">
+						<li>⟨SC-consistent events⟩ ⟨maximal event⟩ ⟨SC-consistent events⟩</li>
+						<li>structured violation witness</li>
+						<li>greatly reduces search complexity</li>
+					</ul>
+					<div class="code" style="position:absolute; right: 0; top: 30rem;">
+						<div>y := <span class="bar">w</span></div>
+						<div><span class="bar">z</span> := x</div>
+						<div>x := 2</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>Instrumentation</h2>
+				<div class="center-v">
+					<code>
+						nrR(w, 1) <em>lW(x, 2)</em> nlW(y, 1) nlR(x, 2) nrW(z, 2)
+					</code>
+					<ul>
+						<li class="fragment">instrumented program generates events in SC order</li>
+						<li class="fragment">
+							decides non-deterministically whether to put in 1st or 2nd part
+							<ul>
+								<li>preserves SC-consistency within parts</li>
+							</ul>
+						</li>
+						<li class="fragment">stops after guessing the maximal event</li>
+						<li class="fragment">
+							keeps track of:
+							<ul>
+								<li>RDMA-consistency</li>
+								<li>SC-consistency / violation</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="code" style="position:absolute; right: 0; top: 30rem;">
+					<div>y := <span class="bar">w</span></div>
+					<div><span class="bar">z</span> := x</div>
+					<div>x := 2</div>
+				</div>
+			</section>
+			<section>
+				<h2>Complexity Bounds</h2>
+				<br>
+				<div class="fragment">
+					<b><em>Theorem:</em></b>
+					<br>
+					RDMA-robustness is <span style="font-variant: small-caps;">ExpSpace</span>-complete in the general case.
+				</div>
+				<br>
+				<br>
+				<div class="fragment">
+					<b><em>Theorem:</em></b>
+					<br>
+					RDMA-robustness for programs without poll operations<br>is <span style="font-variant: small-caps;">PSpace</span>-complete.
+				</div>
+			</section>
+			<section>
+				<h2>Demo</h2>
+			</section>
+			<section class="center">
+				<h1>Summary</h1>
+			</section>
+			<section class="centered">
+				<h2>Unifying Insights</h2>
+				<br>
+				<ul>
+					<li class="fragment">Weak memory introduces new sources of nondeterminism.</li>
+					<br>
+					<li class="fragment">Executions exhibit structural patterns.</li>
+					<br>
+					<li class="fragment">Reduction to finite-state (or counter) systems.</li>
+				</ul>
+			</section>
+			<section class="centered">
+				<h2>Open Directions</h2>
+				<ul>
+					<li>Verification of parameterised RDMA programs</li>
+					<li>Synthesis under weak memory</li>
+					<li>Beyond RDMA: emerging hardware models</li>
+					<li>Optimisation-inspired abstractions</li>
+					<li>Quantitative aspects (cost, performance)</li>
+				</ul>
+			</section>
+			<section class="centered">
+				<h2>Key Takeaway</h2>
+				<br>
+				<br>
+				<div style="font-size: larger;">
+					By identifying structural regularities in weak memory semantics, we can map precise decidability and complexity boundaries for modern concurrent systems.
 				</div>
 			</section>
 			<section class="title">

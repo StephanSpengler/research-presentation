@@ -27,6 +27,13 @@ function addToBuffer(buffer, text) {
     highlight(code);
 }
 
+function addToSequence(sequence, text) {
+    const div = document.createElement("div");
+    div.innerHTML = text;
+    sequence.appendChild(div);
+    highlight(div);
+}
+
 {
     // INTRO-SC
     const section = document.getElementById("intro-sc");
@@ -738,6 +745,88 @@ function addToBuffer(buffer, text) {
         if (idx == 0){
             file4.style.display = "none";
             moveTo(file0, file1);
+        }
+    });
+}
+
+{
+    const section = document.getElementById("rdma-violation");
+    const lines = section.querySelectorAll(".code>div");
+    const buffers = section.querySelectorAll(".fifo-box.inner");
+    const vars = section.querySelectorAll(".straight code");
+    const seq = section.querySelector("#event-sequence");
+
+    addFragments(section, 6);
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            lines[0].classList.remove("active");
+            addToBuffer(buffers[2], `⟨y = 1⟩`);
+            addToSequence(seq, "nrR(w, 1)");
+            lines[1].classList.add("active");
+        }
+        if (idx == 1) {
+            lines[1].classList.remove("active");
+            addToBuffer(buffers[0], `⟨${lines[1].innerHTML}⟩`);
+            lines[2].classList.add("active");
+        }
+        if (idx == 2) {
+            lines[2].classList.remove("active");
+            vars[0].textContent = "x = 2";
+            highlight(vars[0]);
+            addToSequence(seq, "lW(x, 2)");
+        }
+        if (idx == 3) {
+            vanish(buffers[0].children[0]);
+            addToBuffer(buffers[1], `⟨z = 2⟩`);
+            addToSequence(seq, "nlR(x, 2)");
+        }
+        if (idx == 4) {
+            vanish(buffers[1].children[0]);
+            vars[2].textContent = "z = 2";
+            highlight(vars[2]);
+            addToSequence(seq, "nrW(z, 2)");
+        }
+        if (idx == 5) {
+            vanish(buffers[2].children[0]);
+            vars[1].textContent = "y = 1";
+            highlight(vars[1]);
+            addToSequence(seq, "nlW(y, 1)");
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            lines[0].classList.add("active");
+            buffers[2].removeChild(buffers[2].lastChild);
+            lines[1].classList.remove("active");
+        }
+        if (idx == 1) {
+            lines[1].classList.add("active");
+            buffers[0].removeChild(buffers[0].lastChild);
+            lines[2].classList.remove("active");
+        }
+        if (idx == 2) {
+            lines[2].classList.add("active");
+            vars[0].textContent = "x = 0";
+        }
+        if (idx == 3) {
+            addToBuffer(buffers[0], `⟨${lines[1].innerHTML}⟩`);
+            buffers[1].removeChild(buffers[1].lastChild);
+        }
+        if (idx == 4) {
+            addToBuffer(buffers[1], `⟨<span class="bar">z</span> = 2⟩`);
+            vars[2].textContent = "z = 0";
+        }
+        if (idx == 5) {
+            addToBuffer(buffers[2], `⟨y = 1⟩`);
+            vars[1].textContent = "y = 0";
+        }
+        if (idx >= 0 && idx <= 5 && idx != 1) {
+            seq.removeChild(seq.lastChild);
         }
     });
 }

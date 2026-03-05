@@ -18,7 +18,7 @@ li {
     margin-top: 2rem;
 }
 
-section:not(.bullet-unshift) ul ul li {
+section:not(.bullet-unshift) ul ul li, ul.smaller li {
     margin-top: 0.5rem;
 }
 
@@ -125,6 +125,18 @@ section:not(.bullet-unshift) ul ul li {
         line to 0 0
     );
 }
+.fifo-box.back {
+    clip-path: shape(
+        from 100% 0,
+        hline   by calc(var(--h)/2 - 100%),
+        arc     by calc(var(--r)*-0.7071)       calc(var(--r)*0.2929)           of var(--r),
+        line    by calc(var(--r) - var(--h)/2)  calc(var(--h)/2 - var(--r)),
+        arc     by 0                            calc(var(--r)*1.4142)           of var(--r),
+        line    by calc(var(--h)/2 - var(--r))  calc(var(--h)/2 - var(--r)),
+        arc     by calc(var(--r)*0.7071)        calc(var(--r)*0.2929)           of var(--r),
+        line to 100% 100%
+    );
+}
 .fifo-box.outer {
     --h: 6rem;
     --r: 1rem;
@@ -142,6 +154,12 @@ section:not(.bullet-unshift) ul ul li {
     justify-content: flex-start;
     gap: 1rem;
     padding-right: 50cqh;
+}
+.fifo-box.inner.back {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    padding-left: 50cqh;
+    padding-right: inherit;
 }
 
 /* animation */
@@ -209,4 +227,17 @@ section:not(.bullet-unshift) ul ul li {
 #file4 {
     left: 70cqw;
     top: 14cqw;
+}
+
+/* RDMA queue pairs */
+.queue-pair {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#event-sequence {
+    display: flex;
+    gap: 3rem;
 }
