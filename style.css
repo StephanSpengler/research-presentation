@@ -1,9 +1,21 @@
+i {
+    font-style: italic;
+}
+
 section.smaller>*:not(:first-child) {
     font-size: 90%;
 }
 
+section.xx-smaller .code {
+    font-size: 60%;
+}
+
 li {
-    margin: 2rem 0;
+    margin-top: 2rem;
+}
+
+section:not(.bullet-unshift) ul ul li {
+    margin-top: 0.5rem;
 }
 
 .reveal .slides section.centered {
@@ -59,6 +71,7 @@ li {
     line-height: 1.5;
     background-color: #eee;
     counter-increment: lineNumber;
+    white-space: pre;
 }
 .code>div::before {
     white-space: pre;

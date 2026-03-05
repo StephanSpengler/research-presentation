@@ -22,7 +22,7 @@ function addFragments(section, count) {
 
 function addToBuffer(buffer, text) {
     const code = document.createElement("code");
-    code.textContent = text;
+    code.innerHTML = text;
     buffer.appendChild(code);
     highlight(code);
 }
@@ -210,6 +210,7 @@ function addToBuffer(buffer, text) {
     const commentB = section.querySelector("#comment-b");
     const readC = section.querySelector("#read-c");
     const commentC = section.querySelector("#comment-c");
+    const mfence = section.querySelector("#mfence");
     const continued1 = section.querySelector("#continued-1");
     const buffer1 = section.querySelector("#buffer-1");
     // P2
@@ -220,7 +221,7 @@ function addToBuffer(buffer, text) {
     const continued2 = section.querySelector("#continued-2");
     const buffer2 = section.querySelector("#buffer-2");
 
-    addFragments(section, 8);
+    addFragments(section, 10);
 
     Reveal.on("fragmentshown", event => {
         if (Reveal.getCurrentSlide() !== section) return;
@@ -258,12 +259,21 @@ function addToBuffer(buffer, text) {
         if (idx == 6) {
             readC.classList.remove("active");
             commentC.style.display = "inline";
-            continued1.classList.add("active");
+            mfence.classList.add("active");
         }
         if (idx == 7) {
             readE.classList.remove("active");
             commentE.style.display = "inline";
             continued2.classList.add("active");
+        }
+        if (idx == 8) {
+            vanish(buffer1.children[0]);
+            varY.textContent = "y = 2";
+            highlight(varY);
+        }
+        if (idx == 9) {
+            mfence.classList.remove("active");
+            continued1.classList.add("active");
         }
     });
 
@@ -302,12 +312,362 @@ function addToBuffer(buffer, text) {
         if (idx == 6) {
             readC.classList.add("active");
             commentC.style.display = "none";
-            continued1.classList.remove("active");
+            mfence.classList.remove("active");
         }
         if (idx == 7) {
             readE.classList.add("active");
             commentE.style.display = "none";
             continued2.classList.remove("active");
+        }
+        if (idx == 8) {
+            buffer1.children[0].style.display = "inherit";
+            varY.textContent = "y = 0";
+        }
+        if (idx == 9) {
+            continued1.classList.remove("active");
+            mfence.classList.add("active");
+        }
+    });
+}
+
+{
+    // TSO-GAME-1-RUN-1
+    const section = document.getElementById("tso-game-1-run-1");
+    const varX = section.querySelector("#var-x");
+    // P1
+    const assignX1 = section.querySelector("#assign-x1");
+    const assumeX1 = section.querySelector("#assume-x1");
+    const end1 = section.querySelector("#end-1");
+    const buffer1 = section.querySelector("#buffer-1");
+    // P2
+    const assignX2 = section.querySelector("#assign-x2");
+    const end2 = section.querySelector("#end-2");
+    const buffer2 = section.querySelector("#buffer-2");
+    
+    addFragments(section, 4);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.remove("active");
+            addToBuffer(buffer1, "⟨x = 1⟩");
+            assumeX1.classList.add("active");
+        }
+        if (idx == 1) {
+            vanish(buffer1.children[0]);
+            varX.textContent = "x = 1";
+            highlight(varX);
+        }
+        if (idx == 2) {
+            assignX2.classList.remove("active");
+            addToBuffer(buffer2, "⟨x = 2⟩");
+            end2.classList.add("active");
+        }
+        if (idx == 3) {
+            vanish(buffer2.children[0]);
+            varX.textContent = "x = 2";
+            highlight(varX);
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            assumeX1.classList.remove("active");
+        }
+        if (idx == 1) {
+            buffer1.children[0].style.display = "inherit";
+            varX.textContent = "x = 0";
+        }
+        if (idx == 2) {
+            assignX2.classList.add("active");
+            buffer2.removeChild(buffer2.lastChild);
+            end2.classList.remove("active");
+        }
+        if (idx == 3) {
+            buffer2.children[0].style.display = "inherit";
+            varX.textContent = "x = 0";
+        }
+    });
+}
+
+{
+    // TSO-GAME-1-RUN-2
+    const section = document.getElementById("tso-game-1-run-2");
+    const varX = section.querySelector("#var-x");
+    // P1
+    const assignX1 = section.querySelector("#assign-x1");
+    const assumeX1 = section.querySelector("#assume-x1");
+    const end1 = section.querySelector("#end-1");
+    const buffer1 = section.querySelector("#buffer-1");
+    // P2
+    const assignX2 = section.querySelector("#assign-x2");
+    const end2 = section.querySelector("#end-2");
+    const buffer2 = section.querySelector("#buffer-2");
+    
+    addFragments(section, 3);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.remove("active");
+            addToBuffer(buffer1, "⟨x = 1⟩");
+            assumeX1.classList.add("active");
+        }
+        if (idx == 1) {
+            vanish(buffer1.children[0]);
+            varX.textContent = "x = 1";
+            highlight(varX);
+        }
+        if (idx == 2) {
+            assumeX1.classList.remove("active");
+            end1.classList.add("active");
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            assumeX1.classList.remove("active");
+        }
+        if (idx == 1) {
+            buffer1.children[0].style.display = "inherit";
+            varX.textContent = "x = 0";
+        }
+        if (idx == 2) {
+            assumeX1.classList.add("active");
+            end1.classList.remove("active");
+        }
+    });
+}
+
+{
+    // TSO-GAME-2-RUN-1
+    const section = document.getElementById("tso-game-2-run-1");
+    const varX = section.querySelector("#var-x");
+    // P1
+    const assignX1 = section.querySelector("#assign-x1");
+    const assumeX1 = section.querySelector("#assume-x1");
+    const end1 = section.querySelector("#end-1");
+    const buffer1 = section.querySelector("#buffer-1");
+    // P2
+    const assignX2 = section.querySelector("#assign-x2");
+    const end2 = section.querySelector("#end-2");
+    const buffer2 = section.querySelector("#buffer-2");
+    
+    addFragments(section, 5);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.remove("active");
+            addToBuffer(buffer1, "⟨x = 1⟩");
+            assumeX1.classList.add("active");
+        }
+        if (idx == 1) {
+            vanish(buffer1.children[0]);
+            varX.textContent = "x = 1";
+            highlight(varX);
+        }
+        if (idx == 2) {
+            assignX2.classList.remove("active");
+            addToBuffer(buffer2, "⟨x = 2⟩");
+            end2.classList.add("active");
+        }
+        if (idx == 3) {
+            vanish(buffer2.children[0]);
+            varX.textContent = "x = 2";
+            highlight(varX);
+        }
+        if (idx == 4) {
+            assumeX1.classList.remove("active");
+            end1.classList.add("active");
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            assumeX1.classList.remove("active");
+        }
+        if (idx == 1) {
+            buffer1.children[0].style.display = "inherit";
+            varX.textContent = "x = 0";
+        }
+        if (idx == 2) {
+            assignX2.classList.add("active");
+            buffer2.removeChild(buffer2.lastChild);
+            end2.classList.remove("active");
+        }
+        if (idx == 3) {
+            buffer2.children[0].style.display = "inherit";
+            varX.textContent = "x = 0";
+        }
+        if (idx == 4) {
+            assumeX1.classList.add("active");
+            end1.classList.remove("active");
+        }
+    });
+}
+
+{
+    // TSO-GAME-2-RUN-2
+    const section = document.getElementById("tso-game-2-run-2");
+    const varX = section.querySelector("#var-x");
+    // P1
+    const assignX1 = section.querySelector("#assign-x1");
+    const assumeX1 = section.querySelector("#assume-x1");
+    const end1 = section.querySelector("#end-1");
+    const buffer1 = section.querySelector("#buffer-1");
+    // P2
+    const assignX2 = section.querySelector("#assign-x2");
+    const end2 = section.querySelector("#end-2");
+    const buffer2 = section.querySelector("#buffer-2");
+    
+    addFragments(section, 2);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.remove("active");
+            addToBuffer(buffer1, "⟨x = 1⟩");
+            assumeX1.classList.add("active");
+        }
+        if (idx == 1) {
+            assignX2.classList.remove("active");
+            addToBuffer(buffer2, "⟨x = 2⟩");
+            end2.classList.add("active");
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            assignX1.classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            assumeX1.classList.remove("active");
+        }
+        if (idx == 1) {
+            assignX2.classList.add("active");
+            buffer2.removeChild(buffer2.lastChild);
+            end2.classList.remove("active");
+        }
+    });
+}
+
+{
+    // PCS-REDUCTION
+    const section = document.getElementById("pcs");
+    const varX = section.querySelector("#var-x");
+    const varY = section.querySelector("#var-y");
+    const process1 = section.querySelectorAll(".code")[0].children;
+    const process2 = section.querySelectorAll(".code")[1].children;
+    const buffer1 = section.querySelector("#buffer-1");
+    const buffer2 = section.querySelector("#buffer-2");
+
+    addFragments(section, 9);
+    
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            process1[0].classList.remove("active");
+            process1[1].classList.add("active");
+        }
+        if (idx == 1) {
+            process1[1].classList.remove("active");
+            addToBuffer(buffer1, "⟨x = m<sub>1</sub>⟩");
+            process1[2].classList.add("active");
+        }
+        if (idx == 2) {
+            process1[2].classList.remove("active");
+            addToBuffer(buffer1, "⟨x = m<sub>2</sub>⟩");
+            process1[3].classList.add("active");
+        }
+        if (idx == 3) {
+            vanish(buffer1.children[0]);
+            varX.innerHTML = "x = m<sub>1</sub>";
+            highlight(varX);
+        }
+        if (idx == 4) {
+            process2[0].classList.remove("active");
+            process2[1].classList.add("active");
+        }
+        if (idx == 5) {
+            process2[1].classList.remove("active");
+            process2[2].classList.add("active");
+        }
+        if (idx == 6) {
+            process2[2].classList.remove("active");
+            addToBuffer(buffer2, "⟨y = m<sub>1</sub>⟩");
+            process2[6].classList.add("active");
+        }
+        if (idx == 7) {
+            vanish(buffer2.children[0]);
+            varY.innerHTML = "y = m<sub>1</sub>";
+            highlight(varY);
+        }
+        if (idx == 8) {
+            process1[3].classList.remove("active");
+            process1[4].classList.add("active");
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0) {
+            process1[0].classList.add("active");
+            process1[1].classList.remove("active");
+        }
+        if (idx == 1) {
+            process1[1].classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            process1[2].classList.remove("active");
+        }
+        if (idx == 2) {
+            process1[2].classList.add("active");
+            buffer1.removeChild(buffer1.lastChild);
+            process1[3].classList.remove("active");
+        }
+        if (idx == 3) {
+            buffer1.children[0].style.display = "inherit";
+            varX.innerHTML = "x = 0";
+        }
+        if (idx == 4) {
+            process2[0].classList.add("active");
+            process2[1].classList.remove("active");
+        }
+        if (idx == 5) {
+            process2[1].classList.add("active");
+            process2[2].classList.remove("active");
+        }
+        if (idx == 6) {
+            process2[2].classList.add("active");
+            buffer2.removeChild(buffer2.lastChild);
+            process2[6].classList.remove("active");
+        }
+        if (idx == 7) {
+            buffer2.children[0].style.display = "inherit";
+            varY.innerHTML = "y = 0";
+        }
+        if (idx == 8) {
+            process1[3].classList.add("active");
+            process1[4].classList.remove("active");
         }
     });
 }

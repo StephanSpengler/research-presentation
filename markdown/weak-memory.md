@@ -5,7 +5,7 @@
         - TSO: Delayed writes, outdated reads
     - Infinite-state effects
         - TSO: Unbounded buffers
-- → Even simple programs become non-trivial.</span>
+- → Even simple programs become non-trivial.
 
 ---
 
