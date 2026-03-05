@@ -502,6 +502,54 @@
 					</li>
 				</ul>
 			</section>
+			<section class="center">
+				<h1>Remote Direct Memory Access (RDMA)</h1>
+			</section>
+			<section id="classical-data-flow">
+				<h2>Classical Data Flow</h2>
+				<div style="container-type: size;"><div style="position: relative;">
+					<img src="classical.svg" style="width: 100%;">
+					<img class="file" id="file0" src="file-icon.svg">
+					<img class="file" id="file1" src="file-icon.svg">
+					<img class="file" id="file2" src="file-icon.svg">
+					<img class="file" id="file3" src="file-icon.svg">
+					<img class="file" id="file4" src="file-icon.svg">
+				</div></div>
+			</section>
+			<section id="rdma-data-flow">
+				<h2>RDMA Data Flow</h2>
+				<div style="container-type: size;"><div style="position: relative;">
+					<img src="rdma.svg" style="width: 100%;">
+					<img class="file" id="file0" src="file-icon.svg">
+					<img class="file" id="file1" src="file-icon.svg">
+					<img class="file" id="file4" src="file-icon.svg">
+				</div></div>
+			</section>
+			<section>
+				<h2>RDMA Queue Pairs</h2>
+				<img src="queue_pair.png">
+				<div style="font-size: 1rem; text-align: right;">
+					Ambal et al, 2024, Semantics of Remote Direct Memory Access: Operational and Declarative Models of RDMA on TSO Architectures
+				</div>
+			</section>
+			<section>
+				<h2>RDMA Process Syntax</h2>
+				<div class="center">
+					<code>
+						P ::= skip | P<sub>1</sub> ; P<sub>2</sub> | P<sub>1</sub> + P<sub>2</sub> | P*
+						<br>
+						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | x := CAS(z, v<sub>r</sub>, v<sub>w</sub>)
+						<br>
+						&nbsp;&nbsp;&nbsp; | assume(x == v<sub>r</sub>) | assume(x != v<sub>r</sub>)
+						<br>
+						<br>
+						&nbsp;&nbsp;&nbsp; | x := <span class="bar">y</span> | <span class="bar">y</span> := x
+						<br>
+						<br>
+						&nbsp;&nbsp;&nbsp; | rfence(<span class="bar">n</span>) | poll(<span class="bar">n</span>)
+					</code>
+				</div>
+			</section>
 			<section class="title">
 				<script>
 					// copy title page
@@ -520,11 +568,3 @@
 </body>
 
 </html>
-<!-- RDMA paper syntax (RDMA specifics missing) -->
-					<!-- <code>
-						P ::= skip | P1 ; P2 | P1 + P2 | P*
-						<br>
-						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | x := CAS(z, v<sub>r</sub>, v<sub>w</sub>)
-						<br>
-						&nbsp;&nbsp;&nbsp; | assume(x == v<sub>r</sub>) | assume(x != v<sub>r</sub>)
-					</code> -->

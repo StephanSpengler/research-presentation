@@ -657,3 +657,87 @@ function addToBuffer(buffer, text) {
         }
     });
 }
+
+{
+    const section = document.getElementById("classical-data-flow");
+    const file0 = section.querySelector("#file0");
+    const file1 = section.querySelector("#file1");
+    const file2 = section.querySelector("#file2");
+    const file3 = section.querySelector("#file3");
+    const file4 = section.querySelector("#file4");
+
+    function moveTo(element, to) {
+        const s = window.getComputedStyle(to);
+        console.log(s.left, s.top);
+        element.style.transform = `translateX(${window.getComputedStyle(to).left}) translateY(${window.getComputedStyle(to).top})`;
+    }
+
+    addFragments(section, 3);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0){
+            file1.style.display = "inherit";
+            moveTo(file0, file2);
+        }
+        if (idx == 1) {
+            file2.style.display = "inherit";
+            moveTo(file0, file3);
+        }
+        if (idx == 2) {
+            file3.style.display = "inherit";
+            moveTo(file0, file4);
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0){
+            file2.style.display = "none";
+            moveTo(file0, file1);
+        }
+        if (idx == 1) {
+            file3.style.display = "none";
+            moveTo(file0, file2);
+        }
+        if (idx == 2) {
+            file4.style.display = "none";
+            moveTo(file0, file3);
+        }
+    });
+}
+
+{
+    const section = document.getElementById("rdma-data-flow");
+    const file0 = section.querySelector("#file0");
+    const file1 = section.querySelector("#file1");
+    const file4 = section.querySelector("#file4");
+
+    function moveTo(element, to) {
+        const s = window.getComputedStyle(to);
+        console.log(s.left, s.top);
+        element.style.transform = `translateX(${window.getComputedStyle(to).left}) translateY(${window.getComputedStyle(to).top})`;
+    }
+
+    addFragments(section, 1);
+
+    Reveal.on("fragmentshown", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0){
+            file1.style.display = "inherit";
+            moveTo(file0, file4);
+        }
+    });
+
+    Reveal.on("fragmenthidden", event => {
+        if (Reveal.getCurrentSlide() !== section) return;
+        const idx = event.fragment.dataset.fragmentIndex;
+        if (idx == 0){
+            file4.style.display = "none";
+            moveTo(file0, file1);
+        }
+    });
+}

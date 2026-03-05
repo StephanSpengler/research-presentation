@@ -1,3 +1,7 @@
+.bar {
+    text-decoration: overline;
+}
+
 i {
     font-style: italic;
 }
@@ -169,4 +173,40 @@ section:not(.bullet-unshift) ul ul li {
 }
 .vanish {
     animation: vanish 1s forwards;
+}
+
+/* RDMA file icon */
+.file {
+    width: 4rem;
+    height: 4rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 1s ease;
+    display: none;
+}
+
+#file0 {
+    transform: translateX(20cqw) translateY(14cqw);
+    display: inherit;
+}
+
+#file1 {
+    left: 20cqw;
+    top: 14cqw;
+}
+
+#file2 {
+    left: 20cqw;
+    top: 28cqw;
+}
+
+#file3 {
+    left: 70cqw;
+    top: 28cqw;
+}
+
+#file4 {
+    left: 70cqw;
+    top: 14cqw;
 }
