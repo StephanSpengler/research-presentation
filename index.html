@@ -149,47 +149,7 @@
 			</section>
 			<section id="tso-semantics" class="smaller">
 				<h2>Total Store Order Semantics</h2>
-				<div class="columns">
-					<div style="flex: 4;">
-						<div class="columns" style="align-items: center;">
-							<div class="code" style="flex: 3;">
-								<div id="assign-x" class="active">x := 1</div>
-								<div id="assign-y">y := 2</div>
-								<div id="assume-z">assume(z == 0)</div>
-								<div id="assume-y">assume(y == 2)</div>
-								<div id="mfence">mfence</div>
-								<div id="continued-1" class="comment">// ...</div>
-							</div>
-							<div class="fifo-box outer" style="flex: 2;">
-								<div class="fifo-box inner" id="buffer-1">
-								</div>
-							</div>
-						</div>
-						<br>
-						<div class="columns" style="align-items: center;">
-							<div class="code" style="flex: 3;">
-								<div id="assume-x0" class="active">assume(x == 0)</div>
-								<div id="assume-x1">assume(x == 1)</div>
-								<div id="continued-2" class="comment">// ...</div>
-							</div>
-							<div class="fifo-box outer" style="flex: 2;">
-								<div class="fifo-box inner" id="buffer-2">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div style="position: relative; container-type: size;">
-						<div class="oval" style=" top: 80cqh"></div>
-						<div class="straight center">
-							<code id="var-x">x = 0</code>
-							<br>
-							<code id="var-y">y = 0</code>
-							<br>
-							<code id="var-z">z = 0</code>
-						</div>
-						<div class="oval center" style="top: 0cqh">Memory</div>
-					</div>
-				</div>
+				<div class="program"></div>
 			</section>
 			<section class="centered">
 				<h2>TSO Games</h2>

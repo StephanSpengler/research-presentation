@@ -62,33 +62,6 @@ section:not(.bullet-unshift) ul ul li, ul.smaller li {
     flex: 1 1 0;
 }
 
-/* code */
-.code {
-    font-family: "Courier New", Courier, monospace;
-    background-color: #aaa;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    counter-reset: lineNumber;
-}
-.code>div {
-    line-height: 1.5;
-    background-color: #eee;
-    counter-increment: lineNumber;
-    white-space: pre;
-}
-.code>div::before {
-    white-space: pre;
-    content: counter(lineNumber) ":   ";
-    color: gray;
-}
-.code>div.active::before {
-    content: counter(lineNumber) ": ▶ ";
-}
-.comment {
-    color: gray;
-}
-
 /* memory */
 .oval, .straight {
     position: absolute;
@@ -240,4 +213,62 @@ section:not(.bullet-unshift) ul ul li, ul.smaller li {
 #event-sequence {
     display: flex;
     gap: 3rem;
+}
+
+/* code */
+.code {
+    font-family: "Courier New", Courier, monospace;
+    background-color: #aaa;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    counter-reset: lineNumber;
+}
+.code>div {
+    line-height: 1.5;
+    background-color: #eee;
+    counter-increment: lineNumber;
+    white-space: pre;
+}
+.code>div::before {
+    white-space: pre;
+    content: counter(lineNumber) ":   ";
+    color: gray;
+}
+.code>div.active::before {
+    content: counter(lineNumber) ": ▶ ";
+}
+.comment {
+    color: gray;
+}
+
+/* programs */
+.program .threads {
+    flex: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+.program .threads .thread {
+    align-items: center;
+}
+.program .threads .thread .code {
+    flex: 3;
+}
+.program .threads .thread .buffer {
+    flex: 2;
+}
+.program .memory {
+    position: relative;
+    container-type: size;
+}
+.program .memory .bottom {
+    top: 80cqh;
+}
+.program .memory .main {
+    display: flex;
+    gap: 2rem;
+}
+.program .memory .top {
+    top: 0;
 }

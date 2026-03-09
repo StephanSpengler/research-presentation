@@ -1,3 +1,234 @@
+class Thread {
+    constructor(name) {
+        this.name = name;
+        this.code = [];
+    }
+
+    static build(name, builder) {
+        const thread = new Thread(name);
+        builder(thread);
+        return thread;
+    }
+
+    assign(variable, value) {
+        this.code.push({ type: "assign", variable, value });
+    }
+    assume(variable, value) {
+        this.code.push({ type: "assume", variable, value });
+    }
+    comment(text) {
+        this.code.push({ type: "comment", text });
+    }
+    mfence() {
+        this.code.push({ type: "mfence" });
+    }
+
+    getDiv() {
+        const div = document.createElement("div");
+        div.classList.add("code");
+        this.code.forEach(instruction => {
+            const line = document.createElement("div");
+            line.classList.add(instruction.type);
+            line.textContent = this.getText(instruction);
+            div.appendChild(line);
+        });
+        div.firstChild.classList.add("active");
+        return div;
+    }
+
+    getText(instruction) {
+        switch (instruction.type) {
+            case "assign":
+                return `${instruction.variable} := ${instruction.value}`;
+            case "assume":
+                return `assume(${instruction.variable} == ${instruction.value})`;
+            case "comment":
+                return `// ${instruction.text}`;
+            case "mfence":
+                return "mfence";
+        }
+    }
+}
+
+function makeProgram(
+    section, // section element
+    type, // sc / tso / rdma
+    threadObjs, // [threadObj1, threadObj2, ...]
+    variablesDesc, // [varDesc1, varDesc2, ...]
+    computation, // (...threads) => void
+) {
+    const program = section.querySelector(".program");
+    program.classList.add("columns");
+
+    const threads = document.createElement("div");
+    threads.classList.add("threads");
+    threadObjs.forEach(threadObj => {
+        const thread = document.createElement("div");
+        thread.dataset.name = threadObj.name;
+        thread.classList.add("thread", "columns");
+        thread.appendChild(threadObj.getDiv());
+        const bufferOuter = document.createElement("div");
+        bufferOuter.classList.add("buffer", "fifo-box", "outer");
+        const bufferInner = document.createElement("div");
+        bufferInner.classList.add("buffer", "fifo-box", "inner");
+        bufferOuter.appendChild(bufferInner);
+        thread.appendChild(bufferOuter);
+        threads.appendChild(thread);
+    });
+
+    const memory = document.createElement("div");
+    memory.classList.add("memory");
+    const bottom = document.createElement("div");
+    bottom.classList.add("bottom", "oval");
+    const main = document.createElement("div");
+    main.classList.add("main", "straight", "center");
+    variablesDesc.forEach(([name, value]) => {
+        const variable = document.createElement("code");
+        variable.classList.add("variable");
+        variable.textContent = `${name} = ${value}`;
+        variable.dataset.name = name;
+        main.appendChild(variable);
+    });
+    const top = document.createElement("div");
+    top.classList.add("top", "oval", "center");
+    top.textContent = "Memory";
+    memory.append(bottom, main, top);
+
+    program.append(threads, memory);
+
+    function* execute(thread) {
+        console.log("executing", thread.name);
+
+        const threadDiv = threads.querySelector(`.thread[data-name="${thread.name}"]`);
+        const lineDivs = threadDiv.querySelector(".code").children;
+        const bufferDiv = threadDiv.querySelector(".buffer.inner");
+
+        for (let lineIdx = 0; ; lineIdx++) {
+            const fragmentId = section.querySelectorAll(".fragment").length;
+            section.appendChild(document.createElement("span")).classList.add("fragment");
+    
+            const code = thread.code[lineIdx];
+            const div = lineDivs[lineIdx];
+            const next = lineDivs[lineIdx + 1];
+
+            console.log(lineIdx, code, thread.code);
+
+            const bufMsg = document.createElement("code");
+            if (code.type === "assign") {
+                bufMsg.dataset.variable = code.variable;
+                bufMsg.dataset.value = code.value;
+                bufMsg.innerHTML = `⟨${code.variable} = ${code.value}⟩`;
+                bufferDiv.appendChild(bufMsg);
+                bufMsg.style.display = "none";
+            }
+
+            Reveal.addEventListener("fragmentshown", event => {
+                if (Reveal.getCurrentSlide() !== section) return;
+                if (event.fragment.dataset.fragmentIndex != fragmentId) return;
+                div.classList.remove("active");
+                next.classList.add("active");
+                if (code.type === "assign") {
+                    bufMsg.style.display = "inherit";
+                    highlight(bufMsg);
+                }
+            });
+            Reveal.addEventListener("fragmenthidden", event => {
+                if (Reveal.getCurrentSlide() !== section) return;
+                if (event.fragment.dataset.fragmentIndex != fragmentId) return;
+                div.classList.add("active");
+                next.classList.remove("active");
+                if (code.type === "assign") {
+                    bufMsg.style.display = "none";
+                }
+            });
+
+            yield;
+        }
+    }
+
+    function* update(thread) {
+        console.log("updating", thread.name);
+
+        const threadDiv = threads.querySelector(`.thread[data-name="${thread.name}"]`);
+        const bufferDiv = threadDiv.querySelector(".buffer.inner");
+
+
+        for (let bufMsgIdx = 0; ; bufMsgIdx++) {
+            const fragmentId = section.querySelectorAll(".fragment").length;
+            section.appendChild(document.createElement("span")).classList.add("fragment");
+
+            const bufMsg = bufferDiv.children[bufMsgIdx];
+            const variable = bufMsg.dataset.variable;
+            const value = bufMsg.dataset.value;
+            let previousMemory = "";
+
+            Reveal.addEventListener("fragmentshown", event => {
+                if (Reveal.getCurrentSlide() !== section) return;
+                if (event.fragment.dataset.fragmentIndex != fragmentId) return;
+                vanish(bufMsg);
+                const varDiv = main.querySelector(`code[data-name="${variable}"]`);
+                previousMemory = varDiv.innerHTML;
+                varDiv.innerHTML = `${variable} = ${value}`;
+                highlight(varDiv);
+            });
+            Reveal.addEventListener("fragmenthidden", event => {
+                if (Reveal.getCurrentSlide() !== section) return;
+                if (event.fragment.dataset.fragmentIndex != fragmentId) return;
+                bufMsg.style.display = "inherit";
+                const varDiv = main.querySelector(`code[data-name="${variable}"]`);
+                varDiv.innerHTML = previousMemory;
+            });
+
+            yield;
+        }
+
+    }
+
+    computation(...threadObjs.map(threadObj => {
+        const genExecute = execute(threadObj);
+        const genUpdate = update(threadObj);
+        return {
+            execute: () => genExecute.next(),
+            update: () => genUpdate.next(),
+        };
+    }));
+}
+
+makeProgram(
+    document.getElementById("tso-semantics"),
+    "tso",
+    [
+        Thread.build("t1", t => {
+            t.assign("x", "1");
+            t.assign("y", "2");
+            t.assume("z", "0");
+            t.assume("y", "2");
+            t.mfence();
+            t.comment("...");
+        }),
+        Thread.build("t2", t => {
+            t.assume("x", "0");
+            t.assume("x", "1");
+            t.comment("...");
+        }),
+    ],
+    [["x", "0"], ["y", "0"], ["z", "0"]],
+    (t1, t2) => {
+        t1.execute();
+        t1.execute();
+        t1.execute();
+        t1.execute();
+        t2.execute();
+        t1.update();
+        t2.execute();
+        t1.update();
+        t1.execute();
+    },
+);
+
+
+
+
 function highlight(element) {
     element.classList.remove("highlight-animate");
     void element.offsetWidth; // trigger reflow
@@ -197,128 +428,6 @@ function addToSequence(sequence, text) {
         if (idx == 5) {
             assumeB.classList.add("active");
             criticalY.classList.remove("active");
-        }
-    });
-}
-
-
-{
-    // TSO-SEMANTICS
-    const section = document.getElementById("tso-semantics");
-    const varX = section.querySelector("#var-x");
-    const varY = section.querySelector("#var-y");
-    const varZ = section.querySelector("#var-z");
-    // P1
-    const assignX = section.querySelector("#assign-x");
-    const assignY = section.querySelector("#assign-y");
-    const assumeZ = section.querySelector("#assume-z");
-    const assumeY = section.querySelector("#assume-y");
-    const assumeX = section.querySelector("#assume-x");
-    const mfence = section.querySelector("#mfence");
-    const continued1 = section.querySelector("#continued-1");
-    const buffer1 = section.querySelector("#buffer-1");
-    // P2
-    const assumeX0 = section.querySelector("#assume-x0");
-    const assumeX1 = section.querySelector("#assume-x1");
-    const continued2 = section.querySelector("#continued-2");
-    const buffer2 = section.querySelector("#buffer-2");
-
-    addFragments(section, 9);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            assignY.classList.add("active");
-        }
-        if (idx == 1) {
-            assignY.classList.remove("active");
-            addToBuffer(buffer1, "⟨y = 2⟩");
-            assumeZ.classList.add("active");
-        }
-        if (idx == 2) {
-            assumeZ.classList.remove("active");
-            assumeY.classList.add("active");
-        }
-        if (idx == 3) {
-            assumeY.classList.remove("active");
-            mfence.classList.add("active");
-        }
-        if (idx == 4) {
-            assumeX0.classList.remove("active");
-            assumeX1.classList.add("active");
-        }
-        if (idx == 5) {
-            vanish(buffer1.children[0]);
-            varX.textContent = "x = 1";
-            highlight(varX);
-        }
-        if (idx == 6) {
-            assumeX1.classList.remove("active");
-            continued2.classList.add("active");
-        }
-        if (idx == 7) {
-            vanish(buffer1.children[1]);
-            varY.textContent = "y = 2";
-            highlight(varY);
-        }
-        if (idx == 8) {
-            mfence.classList.remove("active");
-            continued1.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            assignY.classList.remove("active");
-        }
-        if (idx == 1) {
-            assignY.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            readA.classList.remove("active");
-        }
-        if (idx == 2) {
-            readA.classList.add("active");
-            commentA.style.display = "none";
-            readB.classList.remove("active");
-        }
-        if (idx == 3) {
-            readB.classList.add("active");
-            commentB.style.display = "none";
-            readC.classList.remove("active");
-        }
-        if (idx == 4) {
-            readD.classList.add("active");
-            commentD.style.display = "none";
-            readE.classList.remove("active");
-        }
-        if (idx == 5) {
-            buffer1.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-        if (idx == 6) {
-            readC.classList.add("active");
-            commentC.style.display = "none";
-            mfence.classList.remove("active");
-        }
-        if (idx == 7) {
-            readE.classList.add("active");
-            commentE.style.display = "none";
-            continued2.classList.remove("active");
-        }
-        if (idx == 8) {
-            buffer1.children[0].style.display = "inherit";
-            varY.textContent = "y = 0";
-        }
-        if (idx == 9) {
-            continued1.classList.remove("active");
-            mfence.classList.add("active");
         }
     });
 }
@@ -675,7 +784,6 @@ function addToSequence(sequence, text) {
 
     function moveTo(element, to) {
         const s = window.getComputedStyle(to);
-        console.log(s.left, s.top);
         element.style.transform = `translateX(${window.getComputedStyle(to).left}) translateY(${window.getComputedStyle(to).top})`;
     }
 
