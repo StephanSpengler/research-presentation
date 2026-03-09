@@ -64,7 +64,7 @@
 						<br>
 						<div class="code">
 							<div id="assign-y" class="active">y := 1</div>
-							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 0</span></div>
+							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 1</span></div>
 							<div id="assume-b">assume(b == 0)</div>
 							<div id="critical-y" class="comment">// critical section</div>
 						</div>
@@ -535,12 +535,11 @@
 			<section>
 				<h2>RDMA Process Syntax</h2>
 				<div class="center">
+					<br>
 					<code>
 						P ::= skip | P<sub>1</sub> ; P<sub>2</sub> | P<sub>1</sub> + P<sub>2</sub> | P*
 						<br>
-						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | x := CAS(z, v<sub>r</sub>, v<sub>w</sub>)
-						<br>
-						&nbsp;&nbsp;&nbsp; | assume(x == v<sub>r</sub>) | assume(x != v<sub>r</sub>)
+						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | assume(x == v<sub>r</sub>)
 						<br>
 						<br>
 						&nbsp;&nbsp;&nbsp; | x := <span class="bar">y</span> | <span class="bar">y</span> := x
