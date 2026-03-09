@@ -97,8 +97,6 @@ function makeProgram(
     program.append(threads, memory);
 
     function* execute(thread) {
-        console.log("executing", thread.name);
-
         const threadDiv = threads.querySelector(`.thread[data-name="${thread.name}"]`);
         const lineDivs = threadDiv.querySelector(".code").children;
         const bufferDiv = threadDiv.querySelector(".buffer.inner");
@@ -110,8 +108,6 @@ function makeProgram(
             const code = thread.code[lineIdx];
             const div = lineDivs[lineIdx];
             const next = lineDivs[lineIdx + 1];
-
-            console.log(lineIdx, code, thread.code);
 
             const bufMsg = document.createElement("code");
             if (code.type === "assign") {
@@ -147,8 +143,6 @@ function makeProgram(
     }
 
     function* update(thread) {
-        console.log("updating", thread.name);
-
         const threadDiv = threads.querySelector(`.thread[data-name="${thread.name}"]`);
         const bufferDiv = threadDiv.querySelector(".buffer.inner");
 
@@ -226,6 +220,29 @@ makeProgram(
     },
 );
 
+makeProgram(
+    document.getElementById("intro-tso"),
+    "tso",
+    [
+        Thread.build("t1", t => {
+            t.assign("x", "1");
+            t.assume("y", "0");
+            t.comment("critical section");
+        }),
+        Thread.build("t2", t => {
+            t.assign("y", "1");
+            t.assume("x", "0");
+            t.comment("critical section");
+        }),
+    ],
+    [["x", "0"], ["y", "0"]],
+    (t1, t2) => {
+        t1.execute();
+        t1.execute();
+        t2.execute();
+        t2.execute();
+    },
+);
 
 
 
@@ -340,94 +357,6 @@ function addToSequence(sequence, text) {
             readB.classList.add("active");
             commentB.style.display = "none";
             assumeB.classList.remove("active");
-        }
-    });
-}
-
-{
-    // INTRO-TSO
-    const section = document.getElementById("intro-tso");
-    const assignX = section.querySelector("#assign-x");
-    const assignY = section.querySelector("#assign-y");
-    const readA = section.querySelector("#read-a");
-    const readB = section.querySelector("#read-b");
-    const commentA = section.querySelector("#comment-a");
-    const commentB = section.querySelector("#comment-b");
-    const assumeA = section.querySelector("#assume-a");
-    const assumeB = section.querySelector("#assume-b");
-    const criticalX = section.querySelector("#critical-x");
-    const criticalY = section.querySelector("#critical-y");
-    const buffer1 = section.querySelector("#buffer-1");
-    const buffer2 = section.querySelector("#buffer-2");
-
-    addFragments(section, 6);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            readA.classList.add("active");
-        }
-        if (idx == 1) {
-            readA.classList.remove("active");
-            commentA.style.display = "inline";
-            assumeA.classList.add("active");
-        }
-        if (idx == 2) {
-            assumeA.classList.remove("active");
-            criticalX.classList.add("active");
-        }
-        if (idx == 3) {
-            assignY.classList.remove("active");
-            const code = document.createElement("code");
-            code.textContent = "⟨y = 1⟩";
-            buffer2.appendChild(code);
-            highlight(code);
-            readB.classList.add("active");
-        }
-        if (idx == 4) {
-            readB.classList.remove("active");
-            commentB.style.display = "inline";
-            assumeB.classList.add("active");
-        }
-        if (idx == 5) {
-            assumeB.classList.remove("active");
-            criticalY.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.add("active");
-            buffer1.innerHTML = "";
-            readA.classList.remove("active");
-        }
-        if (idx == 1) {
-            readA.classList.add("active");
-            commentA.style.display = "none";
-            assumeA.classList.remove("active");
-        }
-        if (idx == 2) {
-            assumeA.classList.add("active");
-            criticalX.classList.remove("active");
-        }
-        if (idx == 3) {
-            assignY.classList.add("active");
-            buffer2.innerHTML = "";
-            readB.classList.remove("active");
-        }
-        if (idx == 4) {
-            readB.classList.add("active");
-            commentB.style.display = "none";
-            assumeB.classList.remove("active");
-        }
-        if (idx == 5) {
-            assumeB.classList.add("active");
-            criticalY.classList.remove("active");
         }
     });
 }
@@ -832,7 +761,6 @@ function addToSequence(sequence, text) {
 
     function moveTo(element, to) {
         const s = window.getComputedStyle(to);
-        console.log(s.left, s.top);
         element.style.transform = `translateX(${window.getComputedStyle(to).left}) translateY(${window.getComputedStyle(to).top})`;
     }
 
