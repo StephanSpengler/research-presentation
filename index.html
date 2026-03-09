@@ -53,33 +53,7 @@
 			</section>
 			<section id="intro-sc" class="smaller">
 				<h2>Sequential Consistency</h2>
-				<div class="columns">
-					<div style="flex: 2 1 0;">
-						<div class="code">
-							<div id="assign-x" class="active">x := 1</div>
-							<div id="read-a">a := y <span id="comment-a" class="comment" style="display:none"> // a = 0</span></div>
-							<div id="assume-a">assume(a == 0)</div>
-							<div id="critical-x" class="comment">// critical section</div>
-						</div>
-						<br>
-						<div class="code">
-							<div id="assign-y" class="active">y := 1</div>
-							<div id="read-b">b := x <span id="comment-b" class="comment" style="display:none"> // b = 1</span></div>
-							<div id="assume-b">assume(b == 0)</div>
-							<div id="critical-y" class="comment">// critical section</div>
-						</div>
-					</div>
-					<div></div>
-					<div style="position: relative; container-type: size;">
-						<div class="oval" style=" top: 80cqh"></div>
-						<div class="straight center">
-							<code id="var-x">x = 0</code>
-							<br>
-							<code id="var-y">y = 0</code>
-						</div>
-						<div class="oval center" style="top: 0cqh">Memory</div>
-					</div>
-				</div>
+				<div class="program"></div>
 			</section>
 			<section id="intro-tso" class="smaller">
 				<h2>Total Store Order</h2>

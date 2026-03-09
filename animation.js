@@ -67,12 +67,17 @@ function makeProgram(
         thread.dataset.name = threadObj.name;
         thread.classList.add("thread", "columns");
         thread.appendChild(threadObj.getDiv());
-        const bufferOuter = document.createElement("div");
-        bufferOuter.classList.add("buffer", "fifo-box", "outer");
-        const bufferInner = document.createElement("div");
-        bufferInner.classList.add("buffer", "fifo-box", "inner");
-        bufferOuter.appendChild(bufferInner);
-        thread.appendChild(bufferOuter);
+        if (type === "sc") {
+            thread.appendChild(document.createElement("div"));
+        }
+        if (type === "tso") {
+            const bufferOuter = document.createElement("div");
+            bufferOuter.classList.add("buffer", "fifo-box", "outer");
+            const bufferInner = document.createElement("div");
+            bufferInner.classList.add("buffer", "fifo-box", "inner");
+            bufferOuter.appendChild(bufferInner);
+            thread.appendChild(bufferOuter);
+        }
         threads.appendChild(thread);
     });
 
@@ -108,9 +113,11 @@ function makeProgram(
             const code = thread.code[lineIdx];
             const div = lineDivs[lineIdx];
             const next = lineDivs[lineIdx + 1];
+            const varDiv = main.querySelector(`code[data-name="${code.variable}"]`);
+            let previousMemory = "";
 
             const bufMsg = document.createElement("code");
-            if (code.type === "assign") {
+            if (code.type === "assign" && type === "tso") {
                 bufMsg.dataset.variable = code.variable;
                 bufMsg.dataset.value = code.value;
                 bufMsg.innerHTML = `⟨${code.variable} = ${code.value}⟩`;
@@ -124,8 +131,15 @@ function makeProgram(
                 div.classList.remove("active");
                 next.classList.add("active");
                 if (code.type === "assign") {
-                    bufMsg.style.display = "inherit";
-                    highlight(bufMsg);
+                    if (type === "sc") {
+                        previousMemory = varDiv.innerHTML;
+                        varDiv.innerHTML = `${code.variable} = ${code.value}`;
+                        highlight(varDiv);
+                    }
+                    if (type === "tso") {
+                        bufMsg.style.display = "inherit";
+                        highlight(bufMsg);
+                    }
                 }
             });
             Reveal.addEventListener("fragmenthidden", event => {
@@ -134,7 +148,10 @@ function makeProgram(
                 div.classList.add("active");
                 next.classList.remove("active");
                 if (code.type === "assign") {
-                    bufMsg.style.display = "none";
+                    if (type === "sc")
+                        varDiv.innerHTML = previousMemory;
+                    if (type === "tso")
+                        bufMsg.style.display = "none";
                 }
             });
 
@@ -154,13 +171,13 @@ function makeProgram(
             const bufMsg = bufferDiv.children[bufMsgIdx];
             const variable = bufMsg.dataset.variable;
             const value = bufMsg.dataset.value;
+            const varDiv = main.querySelector(`code[data-name="${variable}"]`);
             let previousMemory = "";
 
             Reveal.addEventListener("fragmentshown", event => {
                 if (Reveal.getCurrentSlide() !== section) return;
                 if (event.fragment.dataset.fragmentIndex != fragmentId) return;
                 vanish(bufMsg);
-                const varDiv = main.querySelector(`code[data-name="${variable}"]`);
                 previousMemory = varDiv.innerHTML;
                 varDiv.innerHTML = `${variable} = ${value}`;
                 highlight(varDiv);
@@ -169,7 +186,6 @@ function makeProgram(
                 if (Reveal.getCurrentSlide() !== section) return;
                 if (event.fragment.dataset.fragmentIndex != fragmentId) return;
                 bufMsg.style.display = "inherit";
-                const varDiv = main.querySelector(`code[data-name="${variable}"]`);
                 varDiv.innerHTML = previousMemory;
             });
 
@@ -217,6 +233,29 @@ makeProgram(
         t2.execute();
         t1.update();
         t1.execute();
+    },
+);
+
+makeProgram(
+    document.getElementById("intro-sc"),
+    "sc",
+    [
+        Thread.build("t1", t => {
+            t.assign("x", "1");
+            t.assume("y", "0");
+            t.comment("critical section");
+        }),
+        Thread.build("t2", t => {
+            t.assign("y", "1");
+            t.assume("x", "0");
+            t.comment("critical section");
+        }),
+    ],
+    [["x", "0"], ["y", "0"]],
+    (t1, t2) => {
+        t1.execute();
+        t1.execute();
+        t2.execute();
     },
 );
 
@@ -280,85 +319,6 @@ function addToSequence(sequence, text) {
     div.innerHTML = text;
     sequence.appendChild(div);
     highlight(div);
-}
-
-{
-    // INTRO-SC
-    const section = document.getElementById("intro-sc");
-    const varX = section.querySelector("#var-x");
-    const varY = section.querySelector("#var-y");
-    const assignX = section.querySelector("#assign-x");
-    const assignY = section.querySelector("#assign-y");
-    const readA = section.querySelector("#read-a");
-    const readB = section.querySelector("#read-b");
-    const commentA = section.querySelector("#comment-a");
-    const commentB = section.querySelector("#comment-b");
-    const assumeA = section.querySelector("#assume-a");
-    const assumeB = section.querySelector("#assume-b");
-    const criticalX = section.querySelector("#critical-x");
-    const criticalY = section.querySelector("#critical-y");
-
-    addFragments(section, 5);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.remove("active");
-            varX.textContent = "x = 1";
-            highlight(varX);
-            readA.classList.add("active");
-        }
-        if (idx == 1) {
-            readA.classList.remove("active");
-            commentA.style.display = "inline";
-            assumeA.classList.add("active");
-        }
-        if (idx == 2) {
-            assumeA.classList.remove("active");
-            criticalX.classList.add("active");
-        }
-        if (idx == 3) {
-            assignY.classList.remove("active");
-            varY.textContent = "y = 1";
-            highlight(varY);
-            readB.classList.add("active");
-        }
-        if (idx == 4) {
-            readB.classList.remove("active");
-            commentB.style.display = "inline";
-            assumeB.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX.classList.add("active");
-            varX.textContent = "x = 0";
-            readA.classList.remove("active");
-        }
-        if (idx == 1) {
-            readA.classList.add("active");
-            commentA.style.display = "none";
-            assumeA.classList.remove("active");
-        }
-        if (idx == 2) {
-            assumeA.classList.add("active");
-            criticalX.classList.remove("active");
-        }
-        if (idx == 3) {
-            assignY.classList.add("active");
-            varY.textContent = "y = 0";
-            readB.classList.remove("active");
-        }
-        if (idx == 4) {
-            readB.classList.add("active");
-            commentB.style.display = "none";
-            assumeB.classList.remove("active");
-        }
-    });
 }
 
 {
