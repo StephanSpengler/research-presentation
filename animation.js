@@ -79,6 +79,9 @@ function makeProgram(
             bufferOuter.appendChild(bufferInner);
             thread.appendChild(bufferOuter);
         }
+        if (type === "rdma") {
+            // TODO: create three buffers
+        }
         threads.appendChild(thread);
     });
 
@@ -164,8 +167,9 @@ function makeProgram(
         const threadDiv = threads.querySelector(`.thread[data-name="${thread.name}"]`);
         const bufferDiv = threadDiv.querySelector(".buffer.inner");
 
-
         for (let bufMsgIdx = 0; ; bufMsgIdx++) {
+            const bufferIdx = yield; // TODO: use to determine RDMA buffer
+            
             const fragmentId = section.querySelectorAll(".fragment").length;
             section.appendChild(document.createElement("span")).classList.add("fragment");
 
@@ -189,18 +193,16 @@ function makeProgram(
                 bufMsg.style.display = "inherit";
                 varDiv.innerHTML = previousMemory;
             });
-
-            yield;
         }
-
     }
 
     computation(...threadObjs.map(threadObj => {
         const genExecute = execute(threadObj);
         const genUpdate = update(threadObj);
+        genUpdate.next(); // start the generator
         return {
             execute: () => genExecute.next(),
-            update: () => genUpdate.next(),
+            update: bufferIdx => genUpdate.next(bufferIdx),
         };
     }));
 }
