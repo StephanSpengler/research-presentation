@@ -11,6 +11,8 @@
 
 ## Theoretical Challenges
 <!-- .slide: class="centered" -->
+<br>
+
 - Infinite state
 - Non-local interactions
 - Non-intuitive execution sequences
@@ -18,18 +20,11 @@
 
 ---
 
-## Central Research Questions
+## Central Questions of my Research
 <!-- .slide: class="centered" -->
+<br>
+
 - When is verification decidable?
 - Can we reduce infinite-state to analysable models?
 - Can we identify structural patterns?
 - What are complexity boundaries?
-
----
-
-## My Research Direction
-<!-- .slide: class="centered" -->
-- Game-theoretic abstractions of weak memory
-- Normal forms & canonical violations
-- Decidability vs. undecidability
-- Tight complexity classifications
