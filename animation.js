@@ -51,12 +51,13 @@ class Thread {
 }
 
 function makeProgram(
-    section, // section element
+    sectionId, // section element id
     type, // sc / tso / rdma
     threadObjs, // [threadObj1, threadObj2, ...]
     variablesDesc, // [varDesc1, varDesc2, ...]
     computation, // (...threads) => void
 ) {
+    const section = document.getElementById(sectionId);
     const program = section.querySelector(".program");
     program.classList.add("columns");
 
@@ -205,7 +206,54 @@ function makeProgram(
 }
 
 makeProgram(
-    document.getElementById("tso-semantics"),
+    "intro-sc",
+    "sc",
+    [
+        Thread.build("t1", t => {
+            t.assign("x", "1");
+            t.assume("y", "0");
+            t.comment("critical section");
+        }),
+        Thread.build("t2", t => {
+            t.assign("y", "1");
+            t.assume("x", "0");
+            t.comment("critical section");
+        }),
+    ],
+    [["x", "0"], ["y", "0"]],
+    (t1, t2) => {
+        t1.execute();
+        t1.execute();
+        t2.execute();
+    },
+);
+
+makeProgram(
+    "intro-tso",
+    "tso",
+    [
+        Thread.build("t1", t => {
+            t.assign("x", "1");
+            t.assume("y", "0");
+            t.comment("critical section");
+        }),
+        Thread.build("t2", t => {
+            t.assign("y", "1");
+            t.assume("x", "0");
+            t.comment("critical section");
+        }),
+    ],
+    [["x", "0"], ["y", "0"]],
+    (t1, t2) => {
+        t1.execute();
+        t1.execute();
+        t2.execute();
+        t2.execute();
+    },
+);
+
+makeProgram(
+    "tso-semantics",
     "tso",
     [
         Thread.build("t1", t => {
@@ -237,52 +285,94 @@ makeProgram(
 );
 
 makeProgram(
-    document.getElementById("intro-sc"),
-    "sc",
+    "tso-game-1-run-1",
+    "tso",
     [
-        Thread.build("t1", t => {
+        Thread.build("P1", t => {
             t.assign("x", "1");
-            t.assume("y", "0");
-            t.comment("critical section");
+            t.assume("x", "1");
+            t.comment("target state");
         }),
-        Thread.build("t2", t => {
-            t.assign("y", "1");
-            t.assume("x", "0");
-            t.comment("critical section");
+        Thread.build("P2", t => {
+            t.assign("x", "2");
+            t.comment("end");
         }),
     ],
-    [["x", "0"], ["y", "0"]],
-    (t1, t2) => {
-        t1.execute();
-        t1.execute();
-        t2.execute();
+    [["x", "0"]],
+    (P1, P2) => {
+        P1.execute();
+        P1.update();
+        P2.execute();
+        P2.update();
     },
 );
 
 makeProgram(
-    document.getElementById("intro-tso"),
+    "tso-game-1-run-2",
     "tso",
     [
-        Thread.build("t1", t => {
+        Thread.build("P1", t => {
             t.assign("x", "1");
-            t.assume("y", "0");
-            t.comment("critical section");
+            t.assume("x", "1");
+            t.comment("target state");
         }),
-        Thread.build("t2", t => {
-            t.assign("y", "1");
-            t.assume("x", "0");
-            t.comment("critical section");
+        Thread.build("P2", t => {
+            t.assign("x", "2");
+            t.comment("end");
         }),
     ],
-    [["x", "0"], ["y", "0"]],
-    (t1, t2) => {
-        t1.execute();
-        t1.execute();
-        t2.execute();
-        t2.execute();
+    [["x", "0"]],
+    (P1, P2) => {
+        P1.execute();
+        P1.update();
+        P1.execute();
     },
 );
 
+makeProgram(
+    "tso-game-2-run-1",
+    "tso",
+    [
+        Thread.build("P1", t => {
+            t.assign("x", "1");
+            t.assume("x", "2");
+            t.comment("target state");
+        }),
+        Thread.build("P2", t => {
+            t.assign("x", "2");
+            t.comment("end");
+        }),
+    ],
+    [["x", "0"]],
+    (P1, P2) => {
+        P1.execute();
+        P1.update();
+        P2.execute();
+        P2.update();
+        P1.execute();
+    },
+);
+
+makeProgram(
+    "tso-game-2-run-2",
+    "tso",
+    [
+        Thread.build("P1", t => {
+            t.assign("x", "1");
+            t.assume("x", "2");
+            t.comment("target state");
+        }),
+        Thread.build("P2", t => {
+            t.assign("x", "2");
+            t.comment("end");
+        }),
+    ],
+    [["x", "0"]],
+    (P1, P2) => {
+        P1.execute();
+        P2.execute();
+    },
+);
 
 
 function highlight(element) {
@@ -319,245 +409,6 @@ function addToSequence(sequence, text) {
     div.innerHTML = text;
     sequence.appendChild(div);
     highlight(div);
-}
-
-{
-    // TSO-GAME-1-RUN-1
-    const section = document.getElementById("tso-game-1-run-1");
-    const varX = section.querySelector("#var-x");
-    // P1
-    const assignX1 = section.querySelector("#assign-x1");
-    const assumeX1 = section.querySelector("#assume-x1");
-    const end1 = section.querySelector("#end-1");
-    const buffer1 = section.querySelector("#buffer-1");
-    // P2
-    const assignX2 = section.querySelector("#assign-x2");
-    const end2 = section.querySelector("#end-2");
-    const buffer2 = section.querySelector("#buffer-2");
-    
-    addFragments(section, 4);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            assumeX1.classList.add("active");
-        }
-        if (idx == 1) {
-            vanish(buffer1.children[0]);
-            varX.textContent = "x = 1";
-            highlight(varX);
-        }
-        if (idx == 2) {
-            assignX2.classList.remove("active");
-            addToBuffer(buffer2, "⟨x = 2⟩");
-            end2.classList.add("active");
-        }
-        if (idx == 3) {
-            vanish(buffer2.children[0]);
-            varX.textContent = "x = 2";
-            highlight(varX);
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            assumeX1.classList.remove("active");
-        }
-        if (idx == 1) {
-            buffer1.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-        if (idx == 2) {
-            assignX2.classList.add("active");
-            buffer2.removeChild(buffer2.lastChild);
-            end2.classList.remove("active");
-        }
-        if (idx == 3) {
-            buffer2.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-    });
-}
-
-{
-    // TSO-GAME-1-RUN-2
-    const section = document.getElementById("tso-game-1-run-2");
-    const varX = section.querySelector("#var-x");
-    // P1
-    const assignX1 = section.querySelector("#assign-x1");
-    const assumeX1 = section.querySelector("#assume-x1");
-    const end1 = section.querySelector("#end-1");
-    const buffer1 = section.querySelector("#buffer-1");
-    // P2
-    const assignX2 = section.querySelector("#assign-x2");
-    const end2 = section.querySelector("#end-2");
-    const buffer2 = section.querySelector("#buffer-2");
-    
-    addFragments(section, 3);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            assumeX1.classList.add("active");
-        }
-        if (idx == 1) {
-            vanish(buffer1.children[0]);
-            varX.textContent = "x = 1";
-            highlight(varX);
-        }
-        if (idx == 2) {
-            assumeX1.classList.remove("active");
-            end1.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            assumeX1.classList.remove("active");
-        }
-        if (idx == 1) {
-            buffer1.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-        if (idx == 2) {
-            assumeX1.classList.add("active");
-            end1.classList.remove("active");
-        }
-    });
-}
-
-{
-    // TSO-GAME-2-RUN-1
-    const section = document.getElementById("tso-game-2-run-1");
-    const varX = section.querySelector("#var-x");
-    // P1
-    const assignX1 = section.querySelector("#assign-x1");
-    const assumeX1 = section.querySelector("#assume-x1");
-    const end1 = section.querySelector("#end-1");
-    const buffer1 = section.querySelector("#buffer-1");
-    // P2
-    const assignX2 = section.querySelector("#assign-x2");
-    const end2 = section.querySelector("#end-2");
-    const buffer2 = section.querySelector("#buffer-2");
-    
-    addFragments(section, 5);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            assumeX1.classList.add("active");
-        }
-        if (idx == 1) {
-            vanish(buffer1.children[0]);
-            varX.textContent = "x = 1";
-            highlight(varX);
-        }
-        if (idx == 2) {
-            assignX2.classList.remove("active");
-            addToBuffer(buffer2, "⟨x = 2⟩");
-            end2.classList.add("active");
-        }
-        if (idx == 3) {
-            vanish(buffer2.children[0]);
-            varX.textContent = "x = 2";
-            highlight(varX);
-        }
-        if (idx == 4) {
-            assumeX1.classList.remove("active");
-            end1.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            assumeX1.classList.remove("active");
-        }
-        if (idx == 1) {
-            buffer1.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-        if (idx == 2) {
-            assignX2.classList.add("active");
-            buffer2.removeChild(buffer2.lastChild);
-            end2.classList.remove("active");
-        }
-        if (idx == 3) {
-            buffer2.children[0].style.display = "inherit";
-            varX.textContent = "x = 0";
-        }
-        if (idx == 4) {
-            assumeX1.classList.add("active");
-            end1.classList.remove("active");
-        }
-    });
-}
-
-{
-    // TSO-GAME-2-RUN-2
-    const section = document.getElementById("tso-game-2-run-2");
-    const varX = section.querySelector("#var-x");
-    // P1
-    const assignX1 = section.querySelector("#assign-x1");
-    const assumeX1 = section.querySelector("#assume-x1");
-    const end1 = section.querySelector("#end-1");
-    const buffer1 = section.querySelector("#buffer-1");
-    // P2
-    const assignX2 = section.querySelector("#assign-x2");
-    const end2 = section.querySelector("#end-2");
-    const buffer2 = section.querySelector("#buffer-2");
-    
-    addFragments(section, 2);
-
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.remove("active");
-            addToBuffer(buffer1, "⟨x = 1⟩");
-            assumeX1.classList.add("active");
-        }
-        if (idx == 1) {
-            assignX2.classList.remove("active");
-            addToBuffer(buffer2, "⟨x = 2⟩");
-            end2.classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            assignX1.classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            assumeX1.classList.remove("active");
-        }
-        if (idx == 1) {
-            assignX2.classList.add("active");
-            buffer2.removeChild(buffer2.lastChild);
-            end2.classList.remove("active");
-        }
-    });
 }
 
 {
