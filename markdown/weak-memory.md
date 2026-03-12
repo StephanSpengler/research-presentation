@@ -9,17 +9,6 @@
 
 ---
 
-## Theoretical Challenges
-<!-- .slide: class="centered" -->
-<br>
-
-- Infinite state
-- Non-local interactions
-- Non-intuitive execution sequences
-- Hard to reason algorithmically
-
----
-
 ## Central Questions of my Research
 <!-- .slide: class="centered" -->
 <br>

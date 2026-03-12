@@ -44,7 +44,7 @@
 					<br>
 					<div>Stephan Spengler</div>
 					<div style="font-size: smaller">Uppsala University, Sweden</div>
-					<div>10.03.2026</div>
+					<div>12.03.2026</div>
 				</div>
 			</section>
 			<!-- Introduction -->
@@ -84,35 +84,21 @@
 					</code>
 				</div>
 			</section>
-			<section id="tso-semantics" class="smaller">
-				<h2>Total Store Order Semantics</h2>
-				<div class="program"></div>
-			</section>
 			<section class="centered">
 				<h2>TSO Games</h2>
+				<br>
 				<ul>
 					<li class="fragment" data-fragment-index="0">turn-based two-player game</li>
 					<li class="fragment" data-fragment-index="0"><span style="display: inline-block; width: 18rem;"><em>process player</em>:</span> executes instructions</li>
 					<li class="fragment" data-fragment-index="0"><span style="display: inline-block; width: 18rem;"><em>update player</em>:</span> updates buffer messages</li>
-					<br>
-					<li class="fragment" data-fragment-index="1"><span style="display: inline-block; width: 22rem;"><em>reachability game</em>:</span> process player tries to reach target state(s)</li>
-					<li class="fragment" data-fragment-index="2"><span style="display: inline-block; width: 22rem;"><em>safety game</em>:</span> process player tries to avoid target state(s)</li>
 				</ul>
 			</section>
 			<section id="tso-game-1-run-1" class="smaller">
-				<h2>TSO Games - Example 1</h2>
+				<h2>TSO Games - Example</h2>
 				<div class="program"></div>
 			</section>
 			<section id="tso-game-1-run-2" class="smaller">
-				<h2>TSO Games - Example 1</h2>
-				<div class="program"></div>
-			</section>
-			<section id="tso-game-2-run-1" class="smaller">
-				<h2>TSO Games - Example 2</h2>
-				<div class="program"></div>
-			</section>
-			<section id="tso-game-2-run-2" class="smaller">
-				<h2>TSO Games - Example 2</h2>
+				<h2>TSO Games - Example</h2>
 				<div class="program"></div>
 			</section>
 			<section class="centered">
@@ -133,115 +119,27 @@
 					<li>
 						process player: only plays in one process
 						<br>
-						<br>
-						<span class="fragment" data-fragment-index="0">
+						<!-- <br> -->
+						<div class="fragment">
 							<b>Process Fairness:</b>
-							<br>
 							<i>Every enabled process must eventually be executed.</i>
-						</span>
+						</div>
+						<div class="fragment">
+							<b><em>Theorem:</em></b>
+							Safety games with process fairness are undecidable.
+						</div>
 					</li>
-					<br>
 					<li>
 						update player: never updates any messages
 						<br>
-						<br>
-						<span class="fragment" data-fragment-index="1">
+						<!-- <br> -->
+						<div class="fragment">
 							<b>Update Fairness:</b>
-							<br>
 							<i>Every buffer message must eventually be updated to the memory.</i>
-						</span>
-					</li>
-				</ul>
-			</section>
-			<section>
-				<h2>Update Fairness</h2>
-				<div style="text-align: center;">
-					<i>Every buffer message must eventually be updated to the memory.</i>
-				</div>
-				<br>
-				<div>
-					<div class="fragment" data-fragment-index="0">
-						<span style="display: inline-block; width: 8rem;">Show:</span> TSO reachability games are undecidable
-						<br>
-						<span style="display: inline-block; width: 8rem;">Idea:</span> Reduction from <i>Perfect Channel Systems</i>
-					</div>
-					<div class="columns" style="container-type: size;">
-						<ul>
-							<li class="fragment" data-fragment-index="1">nondeterministic finite state automata augmented by FIFO <i>channel</i></li>
-							<li class="fragment" data-fragment-index="2">use TSO buffer to simulate channel</li>
-							<li class="fragment" data-fragment-index="3">reduce PCS reachability (undecidable) to TSO reachability game</li>
-						</ul>
-						<img class="fragment" data-fragment-index="1" src="pcs.svg" alt="Perfect Channel System" width="40%" height="100%">
-					</div>
-				</div>
-			</section>
-			<section id="pcs" class="xx-smaller">
-				<h2>Update Fairness - PCS Reduction</h2>
-				<div class="columns">
-					<div style="flex: 5;">
-						<div class="columns" style="align-items: center;">
-							<div class="code">
-								<div class="active">(</div>
-								<div id="assign-x1"> x := m<sub>1</sub></div>
-								<div id="assign-x2"> x := m<sub>2</sub></div>
-								<div id="assume-y1"> assume(y == m<sub>1</sub>)</div>
-								<div id="assume-y2"> assume(y == m<sub>2</sub>)</div>
-								<div>)*</div>
-							</div>
-							<div class="fifo-box outer">
-								<div class="fifo-box inner" id="buffer-1">
-								</div>
-							</div>
 						</div>
-						<br>
-						<div class="columns" style="align-items: center;">
-							<div class="code">
-								<div class="active">((</div>
-								<div id="assume-x1"> assume(x == m<sub>1</sub>)</div>
-								<div id="assign-y1"> y := m<sub>1</sub></div>
-								<div>)+(</div>
-								<div id="assume-x2"> assume(x == m<sub>2</sub>)</div>
-								<div id="assign-y2"> y := m<sub>2</sub></div>
-								<div>))*</div>
-							</div>
-							<div class="fifo-box outer">
-								<div class="fifo-box inner" id="buffer-2">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div style="position: relative; container-type: size;">
-						<div class="oval" style=" top: 80cqh"></div>
-						<div class="straight center">
-							<code id="var-x">x = 0</code>
-							<br>
-							<code id="var-y">y = 0</code>
-						</div>
-						<div class="oval center" style="top: 0cqh">Memory</div>
-					</div>
-				</div>
-			</section>
-			<section>
-				<h2>TSO Games with Fairness</h2>
-				<ul>
-					<li>
-						<b>Update Fairness:</b>
-						<br>
-						<i>Every buffer message must eventually be updated to the memory.</i>
-						<br>
-						<b><em>Theorem:</em></b>
-						<br>
-						Reachability games with update fairness are undecidable.
-					</li>
-					<li class="fragment">
-						<b>Process Fairness:</b>
-						<br>
-						<i>Every enabled process must eventually be executed.</i>
-						<br>
 						<div class="fragment">
 							<b><em>Theorem:</em></b>
-							<br>
-							Safety games with process fairness are undecidable.
+							Reachability games with update fairness are undecidable.
 						</div>
 					</li>
 				</ul>
@@ -516,37 +414,14 @@
 			<section>
 				<h2>Demo</h2>
 			</section>
-			<section class="center">
-				<h1>Summary</h1>
-			</section>
-			<section class="centered">
-				<h2>Unifying Insights</h2>
-				<br>
-				<ul>
-					<li class="fragment">Weak memory introduces new sources of nondeterminism.</li>
-					<br>
-					<li class="fragment">Executions exhibit structural patterns.</li>
-					<br>
-					<li class="fragment">Reduction to finite-state (or counter) systems.</li>
-				</ul>
-			</section>
 			<section class="centered">
 				<h2>Open Directions</h2>
 				<ul>
 					<li>Verification of parameterised RDMA programs</li>
 					<li>Synthesis under weak memory</li>
-					<li>Beyond RDMA: emerging hardware models</li>
-					<li>Optimisation-inspired abstractions</li>
 					<li>Quantitative aspects (cost, performance)</li>
+					<li>Beyond RDMA: emerging hardware models</li>
 				</ul>
-			</section>
-			<section class="centered">
-				<h2>Key Takeaway</h2>
-				<br>
-				<br>
-				<div style="font-size: larger;">
-					By identifying structural regularities in weak memory semantics, we can map precise decidability and complexity boundaries for modern concurrent systems.
-				</div>
 			</section>
 			<section class="title">
 				<script>

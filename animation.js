@@ -255,38 +255,6 @@ makeProgram(
 );
 
 makeProgram(
-    "tso-semantics",
-    "tso",
-    [
-        Thread.build("t1", t => {
-            t.assign("x", "1");
-            t.assign("y", "2");
-            t.assume("z", "0");
-            t.assume("y", "2");
-            t.mfence();
-            t.comment("...");
-        }),
-        Thread.build("t2", t => {
-            t.assume("x", "0");
-            t.assume("x", "1");
-            t.comment("...");
-        }),
-    ],
-    [["x", "0"], ["y", "0"], ["z", "0"]],
-    (t1, t2) => {
-        t1.execute();
-        t1.execute();
-        t1.execute();
-        t1.execute();
-        t2.execute();
-        t1.update();
-        t2.execute();
-        t1.update();
-        t1.execute();
-    },
-);
-
-makeProgram(
     "tso-game-1-run-1",
     "tso",
     [
@@ -331,51 +299,6 @@ makeProgram(
     },
 );
 
-makeProgram(
-    "tso-game-2-run-1",
-    "tso",
-    [
-        Thread.build("P1", t => {
-            t.assign("x", "1");
-            t.assume("x", "2");
-            t.comment("target state");
-        }),
-        Thread.build("P2", t => {
-            t.assign("x", "2");
-            t.comment("end");
-        }),
-    ],
-    [["x", "0"]],
-    (P1, P2) => {
-        P1.execute();
-        P1.update();
-        P2.execute();
-        P2.update();
-        P1.execute();
-    },
-);
-
-makeProgram(
-    "tso-game-2-run-2",
-    "tso",
-    [
-        Thread.build("P1", t => {
-            t.assign("x", "1");
-            t.assume("x", "2");
-            t.comment("target state");
-        }),
-        Thread.build("P2", t => {
-            t.assign("x", "2");
-            t.comment("end");
-        }),
-    ],
-    [["x", "0"]],
-    (P1, P2) => {
-        P1.execute();
-        P2.execute();
-    },
-);
-
 
 function highlight(element) {
     element.classList.remove("highlight-animate");
@@ -411,109 +334,6 @@ function addToSequence(sequence, text) {
     div.innerHTML = text;
     sequence.appendChild(div);
     highlight(div);
-}
-
-{
-    // PCS-REDUCTION
-    const section = document.getElementById("pcs");
-    const varX = section.querySelector("#var-x");
-    const varY = section.querySelector("#var-y");
-    const process1 = section.querySelectorAll(".code")[0].children;
-    const process2 = section.querySelectorAll(".code")[1].children;
-    const buffer1 = section.querySelector("#buffer-1");
-    const buffer2 = section.querySelector("#buffer-2");
-
-    addFragments(section, 9);
-    
-    Reveal.on("fragmentshown", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            process1[0].classList.remove("active");
-            process1[1].classList.add("active");
-        }
-        if (idx == 1) {
-            process1[1].classList.remove("active");
-            addToBuffer(buffer1, "⟨x = m<sub>1</sub>⟩");
-            process1[2].classList.add("active");
-        }
-        if (idx == 2) {
-            process1[2].classList.remove("active");
-            addToBuffer(buffer1, "⟨x = m<sub>2</sub>⟩");
-            process1[3].classList.add("active");
-        }
-        if (idx == 3) {
-            vanish(buffer1.children[0]);
-            varX.innerHTML = "x = m<sub>1</sub>";
-            highlight(varX);
-        }
-        if (idx == 4) {
-            process2[0].classList.remove("active");
-            process2[1].classList.add("active");
-        }
-        if (idx == 5) {
-            process2[1].classList.remove("active");
-            process2[2].classList.add("active");
-        }
-        if (idx == 6) {
-            process2[2].classList.remove("active");
-            addToBuffer(buffer2, "⟨y = m<sub>1</sub>⟩");
-            process2[6].classList.add("active");
-        }
-        if (idx == 7) {
-            vanish(buffer2.children[0]);
-            varY.innerHTML = "y = m<sub>1</sub>";
-            highlight(varY);
-        }
-        if (idx == 8) {
-            process1[3].classList.remove("active");
-            process1[4].classList.add("active");
-        }
-    });
-
-    Reveal.on("fragmenthidden", event => {
-        if (Reveal.getCurrentSlide() !== section) return;
-        const idx = event.fragment.dataset.fragmentIndex;
-        if (idx == 0) {
-            process1[0].classList.add("active");
-            process1[1].classList.remove("active");
-        }
-        if (idx == 1) {
-            process1[1].classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            process1[2].classList.remove("active");
-        }
-        if (idx == 2) {
-            process1[2].classList.add("active");
-            buffer1.removeChild(buffer1.lastChild);
-            process1[3].classList.remove("active");
-        }
-        if (idx == 3) {
-            buffer1.children[0].style.display = "inherit";
-            varX.innerHTML = "x = 0";
-        }
-        if (idx == 4) {
-            process2[0].classList.add("active");
-            process2[1].classList.remove("active");
-        }
-        if (idx == 5) {
-            process2[1].classList.add("active");
-            process2[2].classList.remove("active");
-        }
-        if (idx == 6) {
-            process2[2].classList.add("active");
-            buffer2.removeChild(buffer2.lastChild);
-            process2[6].classList.remove("active");
-        }
-        if (idx == 7) {
-            buffer2.children[0].style.display = "inherit";
-            varY.innerHTML = "y = 0";
-        }
-        if (idx == 8) {
-            process1[3].classList.add("active");
-            process1[4].classList.remove("active");
-        }
-    });
 }
 
 {
