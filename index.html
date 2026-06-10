@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>Research Presentation</title>
+	<title>CAV 2026 Presentation</title>
 
 	<!-- reveal.js stylesheets -->
 	<link rel="stylesheet" href="reveal-js/reset.css">
@@ -37,137 +37,16 @@
 			<section class="title">
 				<img class="logo" src="./theme-uu/uu-logo-colour-gray.svg" alt="Logo">
 				<div class="content">
-					<h2>Algorithmic Structure in Weak Memory<br>and RDMA Verification</h2>
+					<h2>On the Verification Problem<br/>of RDMA programs</h2>
+					<h4>(Remote Direct Memory Access)</h4>
 					<br>
 					<br>
 					<br>
 					<br>
 					<div>Stephan Spengler</div>
 					<div style="font-size: smaller">Uppsala University, Sweden</div>
-					<div>12.03.2026</div>
+					<div>July 2026</div>
 				</div>
-			</section>
-			<!-- Introduction -->
-			<section class="center">
-				<h1>Introduction</h1>
-			</section>
-			<section id="intro-sc" class="smaller">
-				<h2>Sequential Consistency</h2>
-				<div class="program"></div>
-			</section>
-			<section id="intro-tso" class="smaller">
-				<h2>Total Store Order</h2>
-				<div class="program"></div>
-			</section>
-			<section data-markdown="markdown/weak-memory.md"></section>
-			<section class="center">
-				<h1>TSO Games</h1>
-			</section>
-			<section>
-				<h2>Process Syntax</h2>
-				<br>
-				<div class="center">
-					<code>
-						P ::= skip
-						<br>
-						&nbsp;&nbsp;&nbsp; | P<sub>1</sub> ; P<sub>2</sub>
-						<br>
-						&nbsp;&nbsp;&nbsp; | P<sub>1</sub> + P<sub>2</sub>
-						<br>
-						&nbsp;&nbsp;&nbsp; | P*
-						<br>
-						&nbsp;&nbsp;&nbsp; | x := v
-						<br>
-						&nbsp;&nbsp;&nbsp; | assume(x == v)
-						<br>
-						&nbsp;&nbsp;&nbsp; | mfence
-					</code>
-				</div>
-			</section>
-			<section class="centered">
-				<h2>TSO Games</h2>
-				<br>
-				<ul>
-					<li class="fragment" data-fragment-index="0">turn-based two-player game</li>
-					<li class="fragment" data-fragment-index="0"><span style="display: inline-block; width: 18rem;"><em>process player</em>:</span> executes instructions</li>
-					<li class="fragment" data-fragment-index="0"><span style="display: inline-block; width: 18rem;"><em>update player</em>:</span> updates buffer messages</li>
-				</ul>
-			</section>
-			<section id="tso-game-1-run-1" class="smaller">
-				<h2>TSO Games - Example</h2>
-				<div class="program"></div>
-			</section>
-			<section id="tso-game-1-run-2" class="smaller">
-				<h2>TSO Games - Example</h2>
-				<div class="program"></div>
-			</section>
-			<section class="centered">
-				<h2>Observations</h2>
-				<ul>
-					<li><span style="display: inline-block; width: 18rem;">process player:</span> only plays in one process</li>
-					<li><span style="display: inline-block; width: 18rem;">update player:</span> never updates any messages</li>
-					<br>
-					<li class="fragment" data-fragment-index="0">analysis reduces to single-process programs</li>
-					<ul class="fragment" data-fragment-index="0">
-						<li><span style="font-variant: small-caps;">PSpace</span>-complete</li>
-					</ul>
-				</ul>
-			</section>
-			<section class="centered">
-				<h2>Adding Fairness</h2>
-				<ul>
-					<li>
-						process player: only plays in one process
-						<br>
-						<!-- <br> -->
-						<div class="fragment">
-							<b>Process Fairness:</b>
-							<i>Every enabled process must eventually be executed.</i>
-						</div>
-						<div class="fragment">
-							<b><em>Theorem:</em></b>
-							Safety games with process fairness are undecidable.
-						</div>
-					</li>
-					<li>
-						update player: never updates any messages
-						<br>
-						<!-- <br> -->
-						<div class="fragment">
-							<b>Update Fairness:</b>
-							<i>Every buffer message must eventually be updated to the memory.</i>
-						</div>
-						<div class="fragment">
-							<b><em>Theorem:</em></b>
-							Reachability games with update fairness are undecidable.
-						</div>
-					</li>
-				</ul>
-			</section>
-			<section>
-				<h2>TSO Games - Conclusion</h2>
-				<ul class="make-fragments">
-					<li>
-						reachability and safety <i>without</i> fairness:
-						<ul>
-							<li>reduce to single-process programs → <span style="font-variant: small-caps;">PSpace</span>-complete</li>
-						</ul>
-					</li>
-					<li>
-						reachability with update fairness and safety with process fairness:
-						<ul>
-							<li>reduction from PCS reachability → undecidable</li>
-						</ul>
-					</li>
-					<li>
-						further work could consider other:
-						<ul>
-							<li>winning conditions</li>
-							<li>fairness conditions</li>
-							<li>memory models</li>
-						</ul>
-					</li>
-				</ul>
 			</section>
 			<section class="center">
 				<h1>Remote Direct Memory Access (RDMA)</h1>
@@ -199,43 +78,125 @@
 					Ambal et al, 2024, Semantics of Remote Direct Memory Access: Operational and Declarative Models of RDMA on TSO Architectures
 				</div>
 			</section>
+			<section id="rdma-example">
+				<h2>Example RDMA Execution</h2>
+				<div class="columns" style="min-height: 24rem; padding-top: 2rem;">
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-x">x = 1</code>
+							<br>
+							<code id="var-y">y = 0</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+					<div class="center-h" style="flex:2;">
+						<div class="code">
+							<div class="active">y := <span class="bar">w</span></div>
+							<div><span class="bar">z</span> := x</div>
+							<div>x := 2</div>
+						</div>
+					</div>
+					<div class="queue-pair" style="flex:3;">
+						<div style="display: flex; flex-direction: row;">
+							<div class="fifo-box outer" style="flex: 1;">
+								<div class="fifo-box inner" id="buffer-1"></div>
+							</div>
+							<div class="fifo-box outer" style="flex: 1;">
+								<div class="fifo-box inner" id="buffer-2"></div>
+							</div>
+						</div>
+						<div class="fifo-box back outer">
+							<div class="fifo-box back inner" id="buffer-3"></div>
+						</div>
+					</div>
+					<div style="position: relative; container-type: size;">
+						<div class="oval" style=" top: 80cqh"></div>
+						<div class="straight center">
+							<code id="var-z">z = 0</code>
+							<br>
+							<code id="var-w">w = 1</code>
+						</div>
+						<div class="oval center" style="top: 0cqh">Memory</div>
+					</div>
+				</div>
+			</section>
 			<section>
 				<h2>RDMA Process Syntax</h2>
 				<div class="center">
 					<br>
-					<code>
-						P ::= skip | P<sub>1</sub> ; P<sub>2</sub> | P<sub>1</sub> + P<sub>2</sub> | P*
-						<br>
-						&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | assume(x == v<sub>r</sub>)
-						<br>
-						<br>
-						&nbsp;&nbsp;&nbsp; | x := <span class="bar">y</span> | <span class="bar">y</span> := x
-						<br>
-						<br>
-						&nbsp;&nbsp;&nbsp; | rfence(<span class="bar">n</span>) | poll(<span class="bar">n</span>)
+					<code class="make-fragments">
+						<span>
+							P ::= skip | P<sub>1</sub> ; P<sub>2</sub> | P<sub>1</sub> + P<sub>2</sub> | P*
+							<br>
+							<br>
+						</span>
+						<span>
+							&nbsp;&nbsp;&nbsp; | x := v<sub>w</sub> | assume(x == v<sub>r</sub>)
+							<br>
+							<br>
+						</span>
+						<span>
+							&nbsp;&nbsp;&nbsp; | x := <span class="bar">y</span> | <span class="bar">y</span> := x
+							<br>
+							<br>
+						</span>
+						<span>
+							&nbsp;&nbsp;&nbsp; | rfence(<span class="bar">n</span>) | poll(<span class="bar">n</span>)
+						</span>
 					</code>
 				</div>
 			</section>
+			<section class="center">
+				<h1>Contribution 1:<br>Control State Reachability</h1>
+			</section>
 			<section>
-				<h2>RDMA - Reachability</h2>
+				<h2>Control State Reachability</h2>
 				<br>
 				<div>
 					<div class="fragment" data-fragment-index="0">
-						<span style="display: inline-block; width: 8rem;">Show:</span> RDMA reachability is undecidable
+						<span style="display: inline-block; width: 8rem;">Show:</span> RDMA state reachability is <em>undecidable</em>
 						<br>
-						<span style="display: inline-block; width: 8rem;">Idea:</span> Reduction from <i>Perfect Channel Systems</i>
+						<span style="display: inline-block; width: 8rem;">Idea:</span> use RDMA buffers to simulate a <em>perfect message channel</em>
 					</div>
+					<ul class="fragment" data-fragment-index="1">
+						<li>ensure exactly-once delivery (prevent message <em>loss</em> and <em>duplication</em>)</li>
+					</ul>
 					<div class="columns" style="container-type: size;">
 						<ul style="flex: 1;">
-							<li class="fragment" data-fragment-index="1">use RDMA queue pairs to simulate<br>the channel</li>
-							<li class="fragment" data-fragment-index="2">synchronisation (rfence, poll)<br><b>not needed</b></li>
+							<li class="fragment" data-fragment-index="2">reduction from PCP<br/>(<em>Post's Correspondence Problem</em>)</li>
+							<li class="fragment" data-fragment-index="3">synchronisation <em>not needed</em><br>(rfence, poll)</li>
 						</ul>
-						<img class="fragment" data-fragment-index="1" src="pcs.svg" alt="Perfect Channel System" width="40%" height="100%" style="flex: 0;">
+						<img class="fragment" data-fragment-index="2" src="pcp.svg" alt="Post's Correspondence Problem" width="40%" height="100%" style="flex: 0;">
 					</div>
 				</div>
 			</section>
+			<section class="center">
+				<h1>Contribution 2:<br>Robustness</h1>
+			</section>
 			<section>
-				<h2>RDMA - Robustness</h2>
+				<h2>RDMA Behaviour</h2>
+				<div class="code" style="position:absolute; right: 0; top: 8rem;">
+					<div>y := <span class="bar">w</span></div>
+					<div><span class="bar">z</span> := x</div>
+					<div>x := 2</div>
+				</div>
+				<ul class="make-fragments">
+					<li>prevent / detect <em>unexpected</em> behaviour</li>
+					<li>baseline model: <em>Sequential Consistency</em> (SC)</li>
+					<ul>
+						<li>each thread follows program order</li>
+						<li>all threads agree on the order of operations</li>
+					</ul>
+					<li>focus on <em>observable</em> behaviour</li>
+					<ul>
+						<li>values of read operations</li>
+						<li>order of write operations</li>
+					</ul>
+				</ul>
+			</section>
+			<section>
+				<h2>Robustness</h2>
 				<br>
 				<b><em>Robustness Problem:</em></b>
 				<br>
@@ -256,8 +217,8 @@
 				</div>
 			</section>
 			<section id="rdma-violation">
-				<h2>RDMA: Example Violation</h2>
-				<div class="columns" style="min-height: 24rem;">
+				<h2>Example Violation</h2>
+				<div class="columns" style="min-height: 24rem; padding-top: 2rem;">
 					<div style="position: relative; container-type: size;">
 						<div class="oval" style=" top: 80cqh"></div>
 						<div class="straight center">
@@ -411,16 +372,16 @@
 					RDMA-robustness for programs without poll operations<br>is <span style="font-variant: small-caps;">PSpace</span>-complete.
 				</div>
 			</section>
-			<section>
-				<h2>Demo</h2>
-			</section>
 			<section class="centered">
 				<h2>Open Directions</h2>
 				<ul>
-					<li>Verification of parameterised RDMA programs</li>
-					<li>Synthesis under weak memory</li>
+					<br>
+					<li class="fragment">Verification under other local memory models</li>
+					<br>
+					<li class="fragment">Verification of parameterised RDMA programs</li>
+					<!-- <li>Synthesis under weak memory</li>
 					<li>Quantitative aspects (cost, performance)</li>
-					<li>Beyond RDMA: emerging hardware models</li>
+					<li>Beyond RDMA: emerging hardware models</li> -->
 				</ul>
 			</section>
 			<section class="title">

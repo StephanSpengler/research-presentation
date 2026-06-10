@@ -1,0 +1,34 @@
+<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" stroke="black" fill="black">
+    <defs>
+        <marker
+            id="arrow"
+            viewBox="0 0 20 20"
+            refX="50"
+            refY="10"
+            markerWidth="10"
+            markerHeight="10"
+            orient="auto-start-reverse">
+            <path d="M 0 0 L 20 10 L 0 20 z" />
+        </marker>
+    </defs>
+
+    <!-- Arrows -->
+    <line x1="100" y1="150" x2="300" y2="050" marker-end="url(#arrow)"/>
+    <line x1="100" y1="150" x2="300" y2="250" marker-end="url(#arrow)"/>
+    <line x1="300" y1="050" x2="500" y2="150" marker-end="url(#arrow)"/>
+    <line x1="300" y1="250" x2="500" y2="150" marker-end="url(#arrow)"/>
+
+    <!-- Nodes -->
+    <svg fill="white">
+        <circle cx="100" cy="150" r="15"/>
+        <circle cx="300" cy="050" r="15"/>
+        <circle cx="300" cy="250" r="15"/>
+        <circle cx="500" cy="150" r="15"/>
+    </svg>
+
+    <!-- Labels -->
+    <text x="150" y="075" font-size="32" text-anchor="middle" dominant-baseline="central">indices i<tspan dy="8" font-size="20">j</tspan></text>
+    <text x="150" y="225" font-size="32" text-anchor="middle" dominant-baseline="central">indices i<tspan dy="8" font-size="20">j</tspan></text>
+    <text x="450" y="075" font-size="32" text-anchor="middle" dominant-baseline="central">letters of u<tspan dy="8" font-size="20">i<tspan dy="6" font-size="16">j</tspan></tspan></text>
+    <text x="450" y="225" font-size="32" text-anchor="middle" dominant-baseline="central">letters of v<tspan dy="8" font-size="20">i<tspan dy="6" font-size="16">j</tspan></tspan></text>
+</svg>

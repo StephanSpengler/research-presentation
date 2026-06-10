@@ -207,98 +207,6 @@ function makeProgram(
     }));
 }
 
-makeProgram(
-    "intro-sc",
-    "sc",
-    [
-        Thread.build("t1", t => {
-            t.assign("x", "1");
-            t.assume("y", "0");
-            t.comment("critical section");
-        }),
-        Thread.build("t2", t => {
-            t.assign("y", "1");
-            t.assume("x", "0");
-            t.comment("critical section");
-        }),
-    ],
-    [["x", "0"], ["y", "0"]],
-    (t1, t2) => {
-        t1.execute();
-        t1.execute();
-        t2.execute();
-    },
-);
-
-makeProgram(
-    "intro-tso",
-    "tso",
-    [
-        Thread.build("t1", t => {
-            t.assign("x", "1");
-            t.assume("y", "0");
-            t.comment("critical section");
-        }),
-        Thread.build("t2", t => {
-            t.assign("y", "1");
-            t.assume("x", "0");
-            t.comment("critical section");
-        }),
-    ],
-    [["x", "0"], ["y", "0"]],
-    (t1, t2) => {
-        t1.execute();
-        t1.execute();
-        t2.execute();
-        t2.execute();
-    },
-);
-
-makeProgram(
-    "tso-game-1-run-1",
-    "tso",
-    [
-        Thread.build("P1", t => {
-            t.assign("x", "1");
-            t.assume("x", "1");
-            t.comment("target state");
-        }),
-        Thread.build("P2", t => {
-            t.assign("x", "2");
-            t.comment("end");
-        }),
-    ],
-    [["x", "0"]],
-    (P1, P2) => {
-        P1.execute();
-        P1.update();
-        P2.execute();
-        P2.update();
-    },
-);
-
-makeProgram(
-    "tso-game-1-run-2",
-    "tso",
-    [
-        Thread.build("P1", t => {
-            t.assign("x", "1");
-            t.assume("x", "1");
-            t.comment("target state");
-        }),
-        Thread.build("P2", t => {
-            t.assign("x", "2");
-            t.comment("end");
-        }),
-    ],
-    [["x", "0"]],
-    (P1, P2) => {
-        P1.execute();
-        P1.update();
-        P1.execute();
-    },
-);
-
 
 function highlight(element) {
     element.classList.remove("highlight-animate");
@@ -308,10 +216,7 @@ function highlight(element) {
 
 function vanish(element) {
     element.classList.add("vanish");
-    element.addEventListener("animationend", () => {
-        element.style.display = "none";
-        element.classList.remove("vanish");
-    }, { once: true });
+    element.addEventListener("animationend", () => element.remove(), { once: true });
 }
 
 function addFragments(section, count) {
@@ -330,6 +235,7 @@ function addToBuffer(buffer, text) {
 }
 
 function addToSequence(sequence, text) {
+    if (!sequence) return;
     const div = document.createElement("div");
     div.innerHTML = text;
     sequence.appendChild(div);
@@ -418,47 +324,55 @@ function addToSequence(sequence, text) {
     });
 }
 
-{
-    const section = document.getElementById("rdma-violation");
+function animateRDMA(section) {
     const lines = section.querySelectorAll(".code>div");
     const buffers = section.querySelectorAll(".fifo-box.inner");
     const vars = section.querySelectorAll(".straight code");
     const seq = section.querySelector("#event-sequence");
 
-    addFragments(section, 6);
+    addFragments(section, 8);
     Reveal.on("fragmentshown", event => {
         if (Reveal.getCurrentSlide() !== section) return;
         const idx = event.fragment.dataset.fragmentIndex;
         if (idx == 0) {
             lines[0].classList.remove("active");
+            addToBuffer(buffers[0], `⟨${lines[0].innerHTML}⟩`);
+            lines[1].classList.add("active");
+        }
+        if (idx == 1) {
+            vanish(buffers[0].lastChild);
+            addToBuffer(buffers[1], `⟨${lines[0].innerHTML}⟩`);
+        }
+        if (idx == 2) {
+            vanish(buffers[1].lastChild);
             addToBuffer(buffers[2], `⟨y = 1⟩`);
             addToSequence(seq, "nrR(w, 1)");
             lines[1].classList.add("active");
         }
-        if (idx == 1) {
+        if (idx == 3) {
             lines[1].classList.remove("active");
             addToBuffer(buffers[0], `⟨${lines[1].innerHTML}⟩`);
             lines[2].classList.add("active");
         }
-        if (idx == 2) {
+        if (idx == 4) {
             lines[2].classList.remove("active");
             vars[0].textContent = "x = 2";
             highlight(vars[0]);
             addToSequence(seq, "lW(x, 2)");
         }
-        if (idx == 3) {
-            vanish(buffers[0].children[0]);
-            addToBuffer(buffers[1], `⟨z = 2⟩`);
+        if (idx == 5) {
+            vanish(buffers[0].lastChild);
+            addToBuffer(buffers[1], `⟨${lines[1].innerHTML}⟩`.replace("x", "2"));
             addToSequence(seq, "nlR(x, 2)");
         }
-        if (idx == 4) {
-            vanish(buffers[1].children[0]);
+        if (idx == 6) {
+            vanish(buffers[1].lastChild);
             vars[2].textContent = "z = 2";
             highlight(vars[2]);
             addToSequence(seq, "nrW(z, 2)");
         }
-        if (idx == 5) {
-            vanish(buffers[2].children[0]);
+        if (idx == 7) {
+            vanish(buffers[2].lastChild);
             vars[1].textContent = "y = 1";
             highlight(vars[1]);
             addToSequence(seq, "nlW(y, 1)");
@@ -470,32 +384,42 @@ function addToSequence(sequence, text) {
         const idx = event.fragment.dataset.fragmentIndex;
         if (idx == 0) {
             lines[0].classList.add("active");
-            buffers[2].removeChild(buffers[2].lastChild);
+            buffers[0].removeChild(buffers[0].lastChild);
             lines[1].classList.remove("active");
         }
         if (idx == 1) {
+            addToBuffer(buffers[0], `⟨${lines[0].innerHTML}⟩`);
+            buffers[1].removeChild(buffers[1].lastChild);
+        }
+        if (idx == 2) {
+            addToBuffer(buffers[1], `⟨${lines[0].innerHTML}⟩`);
+            buffers[2].removeChild(buffers[2].lastChild);
+        }
+        if (idx == 3) {
             lines[1].classList.add("active");
             buffers[0].removeChild(buffers[0].lastChild);
             lines[2].classList.remove("active");
         }
-        if (idx == 2) {
+        if (idx == 4) {
             lines[2].classList.add("active");
             vars[0].textContent = "x = 0";
         }
-        if (idx == 3) {
+        if (idx == 5) {
             addToBuffer(buffers[0], `⟨${lines[1].innerHTML}⟩`);
             buffers[1].removeChild(buffers[1].lastChild);
         }
-        if (idx == 4) {
+        if (idx == 6) {
             addToBuffer(buffers[1], `⟨<span class="bar">z</span> = 2⟩`);
             vars[2].textContent = "z = 0";
         }
-        if (idx == 5) {
+        if (idx == 7) {
             addToBuffer(buffers[2], `⟨y = 1⟩`);
             vars[1].textContent = "y = 0";
         }
-        if (idx >= 0 && idx <= 5 && idx != 1) {
+        if (seq && idx >= 2 && idx <= 7 && idx != 3) {
             seq.removeChild(seq.lastChild);
         }
     });
 }
+animateRDMA(document.getElementById("rdma-example"));
+animateRDMA(document.getElementById("rdma-violation"));

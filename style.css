@@ -272,3 +272,18 @@ section:not(.bullet-unshift) ul ul li, ul.smaller li {
 .program .memory .top {
     top: 0;
 }
+
+
+.queue-pair {
+    position: relative;
+}
+.queue-pair::before {
+    content: "";
+    position: absolute;
+    top: -1rem;
+    bottom: -1rem;
+    left: calc(50% - 2px);
+    right: 50%;
+    border-right: 4px dashed gray;
+    pointer-events: none;
+}
