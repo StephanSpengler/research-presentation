@@ -212,7 +212,7 @@ section:not(.bullet-unshift) ul ul li, ul.smaller li {
 
 #event-sequence {
     display: flex;
-    gap: 3rem;
+    gap: 4rem;
 }
 
 /* code */
